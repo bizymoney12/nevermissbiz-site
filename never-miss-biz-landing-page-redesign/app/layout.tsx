@@ -9,7 +9,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: 'NeverMissBiz | Never Lose Another Lead',
   description: 'AI-powered missed call recovery service for local home service businesses. Plumbers, HVAC, electricians in Kissimmee, FL. Turn missed calls into booked jobs.',
-  generator: 'v0.app',
+  
   icons: {
     icon: [
       {
