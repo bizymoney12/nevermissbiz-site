@@ -7,9 +7,20 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'NeverMissBiz | Never Lose Another Lead',
+  title: 'NeverMissBiz | Never Miss Another Lead',
   description: 'AI-powered missed call recovery service for local home service businesses. Plumbers, HVAC, electricians in Kissimmee, FL. Turn missed calls into booked jobs.',
-  
+  openGraph: {
+    title: 'NeverMissBiz | Never Miss Another Lead',
+    description: 'AI-powered missed call recovery for local home service businesses. Plumbers, HVAC, electricians in Kissimmee, FL.',
+    url: 'https://nevermissbiz.com',
+    siteName: 'NeverMissBiz',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'NeverMissBiz | Never Miss Another Lead',
+    description: 'AI-powered missed call recovery for local home service businesses.',
+  },
   icons: {
     icon: [
       {
