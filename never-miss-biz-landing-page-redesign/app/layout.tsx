@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     url: 'https://nevermissbiz.com',
     siteName: 'NeverMissBiz',
     type: 'website',
+    images: ['/og-image.png'],
   },
   twitter: {
     card: 'summary',
