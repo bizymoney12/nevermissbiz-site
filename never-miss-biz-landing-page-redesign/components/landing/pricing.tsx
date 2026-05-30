@@ -71,7 +71,7 @@ export function Pricing() {
           className="flex items-center gap-4 mb-8"
         >
           <div className="w-12 h-px bg-[#D4AF37]" />
-          <span className="text-sm text-muted-foreground uppercase tracking-wider">Pricing</span>
+          <span className="text-sm text-muted-foreground uppercase tracking-wider">Plans</span>
         </motion.div>
 
         {/* Main Headline */}
@@ -81,8 +81,8 @@ export function Pricing() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-16 max-w-4xl"
         >
-          Simple pricing.{" "}
-          <span className="text-[#D4AF37]">Serious ROI.</span>
+          Stop losing leads.{" "}
+          <span className="text-[#D4AF37]">Start winning jobs.</span>
         </motion.h2>
 
         {/* Pricing Grid */}
