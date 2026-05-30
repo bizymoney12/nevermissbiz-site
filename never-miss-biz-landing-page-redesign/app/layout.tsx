@@ -51,11 +51,11 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-[#09090b]">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
-        <script 
-          src="https://widgets.leadconnectorhq.com/loader.js" 
-          data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js" 
-          data-widget-id="6a01cf82e8fefa2554f46f60"
-        />
+       <script 
+  src="https://beta.leadconnectorhq.com/loader.js" 
+  data-resources-url="https://beta.leadconnectorhq.com/chat-widget/loader.js" 
+  data-widget-id="6a04f1ab0d644482cc7169f2"
+/>
       </body>
     </html>
   )
