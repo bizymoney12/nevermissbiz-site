@@ -136,7 +136,7 @@ export function ROICalculator() {
             <p className="text-lg text-muted-foreground mb-6">on the table every month</p>
             
             <p className="text-muted-foreground mb-8">
-              NeverMissBiz costs from $297/mo. <span className="text-[#D4AF37] font-semibold">Your potential ROI: {roi}x</span>
+              Book a free 15-minute call to see what we can recover for you. <span className="text-[#D4AF37] font-semibold">Your potential ROI: {roi}x</span>
             </p>
 
             <Button 
