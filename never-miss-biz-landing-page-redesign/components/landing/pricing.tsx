@@ -10,8 +10,6 @@ const plans = [
   {
     name: "Starter",
     tagline: "Your Defense",
-    price: "$297",
-    setup: "$500",
     description: "Never lose another lead",
     features: [
       "Instant lead response system",
@@ -27,8 +25,6 @@ const plans = [
   {
     name: "Growth",
     tagline: "Your Offense",
-    price: "$497",
-    setup: "$800",
     description: "For growing businesses ready to scale",
     features: [
       "Starter +",
@@ -44,8 +40,6 @@ const plans = [
   {
     name: "Full System",
     tagline: "Your Complete Playbook",
-    price: "$997",
-    setup: "$1,500",
     description: "For businesses ready to dominate their market",
     features: [
       "Growth +",
@@ -121,16 +115,6 @@ export function Pricing() {
                   <p className="text-sm text-muted-foreground mt-3">{plan.description}</p>
                 </div>
                 
-                {/* Price */}
-                <div className="mb-8">
-                  <div className="flex items-baseline">
-                    <span className="text-5xl font-bold text-foreground">{plan.price}</span>
-                    <span className="text-muted-foreground ml-2">/mo</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {plan.setup} one-time setup
-                  </p>
-                </div>
                 
                 {/* Features - Plain text, no bullets */}
                 <div className="space-y-4 mb-8 flex-grow">
