@@ -150,7 +150,7 @@ export function Hero() {
           {[
             { value: "0", label: "Leads Lost After Hours" },
             { value: "24/7", label: "Always On — Day & Night" },
-            { value: "30s", label: "Response Time" },
+            { value: "100%", label: "Calls Captured" },
             { value: "48hr", label: "Setup Time" },
           ].map((stat, i) => (
             <div
