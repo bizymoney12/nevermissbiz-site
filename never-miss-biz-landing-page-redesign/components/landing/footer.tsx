@@ -35,11 +35,11 @@ export function Footer() {
             </p>
             <div className="space-y-3">
               <a 
-                href="tel:+13106541061" 
+                href="tel:+14072891406" 
                 className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Phone className="w-4 h-4" />
-                (310) 654-1061
+                (407) 289-1406
               </a>
               <a 
                 href="mailto:mike@nevermissbiz.com" 
