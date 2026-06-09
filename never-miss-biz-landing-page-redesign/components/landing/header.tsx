@@ -11,7 +11,7 @@ const BOOKING_URL = "https://api.leadconnectorhq.com/widget/booking/2D03AJHPVtlS
 const navLinks = [
   { name: "The Problem", href: "#problem" },
   { name: "How It Works", href: "#how-it-works" },
-  { name: "Pricing", href: "#pricing" },
+  { name: "Plans", href: "#pricing" },
   { name: "FAQ", href: "#faq" },
 ];
 
