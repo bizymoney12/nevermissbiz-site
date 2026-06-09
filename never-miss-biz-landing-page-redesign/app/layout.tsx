@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import Script from 'next/script'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -49,13 +50,25 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-[#09090b]">
       <body className="font-sans antialiased bg-[#09090b]">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-ZN86RPH217"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-ZN86RPH217');
+          `}
+        </Script>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
-       <script 
-  src="https://beta.leadconnectorhq.com/loader.js" 
-  data-resources-url="https://beta.leadconnectorhq.com/chat-widget/loader.js" 
-  data-widget-id="6a04f1ab0d644482cc7169f2"
-/>
+        <script 
+          src="https://beta.leadconnectorhq.com/loader.js" 
+          data-resources-url="https://beta.leadconnectorhq.com/chat-widget/loader.js" 
+          data-widget-id="6a04f1ab0d644482cc7169f2"
+        />
       </body>
     </html>
   )
