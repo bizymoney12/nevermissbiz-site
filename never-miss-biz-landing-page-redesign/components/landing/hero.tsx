@@ -72,7 +72,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-center mb-6"
         >
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-4 leading-tight">
+          <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-4 leading-tight">
             While You&apos;re On the Job,
             <br />
             <span className="text-[#D4AF37] text-glow">
