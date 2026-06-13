@@ -30,8 +30,8 @@ export function Hero() {
       setTimeout(() => {
         setTradeIndex((prev) => (prev + 1) % TRADES.length);
         setFade(true);
-      }, 400);
-    }, 2200);
+      }, 500);
+    }, 2800);
     return () => clearInterval(interval);
   }, []);
 
@@ -70,7 +70,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-center mb-6"
+          className="text-center mb-4"
         >
           <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-4 leading-tight">
             While You&apos;re On the Job,
@@ -81,23 +81,28 @@ export function Hero() {
           </h1>
         </motion.div>
 
-        {/* Cycling Trade Text */}
+        {/* Cycling Trade Text — inline, no box */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex justify-center mb-6"
+          className="text-center mb-8"
         >
-          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/5">
-            <span className="w-2 h-2 bg-[#D4AF37] rounded-full animate-pulse flex-shrink-0" />
-            <span className="text-sm text-muted-foreground">Built for</span>
+          <p className="text-xl md:text-2xl text-white/60 font-normal">
+            Built for{" "}
             <span
-              className="text-sm font-semibold text-[#D4AF37] min-w-[140px] text-left transition-opacity duration-400"
-              style={{ opacity: fade ? 1 : 0, transition: "opacity 0.4s ease" }}
+              className="text-white font-semibold"
+              style={{
+                opacity: fade ? 1 : 0,
+                transition: "opacity 0.5s ease",
+                display: "inline-block",
+                minWidth: "180px",
+                textAlign: "left",
+              }}
             >
               {TRADES[tradeIndex]}
             </span>
-          </div>
+          </p>
         </motion.div>
 
         {/* Subheadline */}
@@ -116,7 +121,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-24"
+          className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
         >
           <Button
             size="lg"
