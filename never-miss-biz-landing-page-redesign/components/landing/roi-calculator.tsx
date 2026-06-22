@@ -16,7 +16,6 @@ export function ROICalculator() {
   const [closeRate, setCloseRate] = useState(40);
 
   const monthlyLoss = Math.round((missedCalls * 4.33) * (closeRate / 100) * jobValue);
-  const roi = Math.round(monthlyLoss / 297);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
