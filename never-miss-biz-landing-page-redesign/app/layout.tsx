@@ -1,12 +1,10 @@
-import type { Metadata } from 'next'
+\import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
 import './globals.css'
-
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
   title: 'NeverMissBiz | Never Miss Another Lead',
   description: 'AI-powered missed call recovery service for local home service businesses. Plumbers, HVAC, electricians in Kissimmee, FL. Turn missed calls into booked jobs.',
@@ -24,24 +22,10 @@ export const metadata: Metadata = {
     description: 'AI-powered missed call recovery for local home service businesses.',
   },
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
   },
 }
-
 export default function RootLayout({
   children,
 }: Readonly<{
