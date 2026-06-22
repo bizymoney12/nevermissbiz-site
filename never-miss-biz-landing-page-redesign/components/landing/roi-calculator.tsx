@@ -39,7 +39,7 @@ export function ROICalculator() {
           className="flex items-center gap-4 mb-8"
         >
           <div className="w-12 h-px bg-[#D4AF37]" />
-          <span className="text-sm text-muted-foreground uppercase tracking-wider">ROI Calculator</span>
+          <span className="text-sm text-muted-foreground uppercase tracking-wider">The Math</span>
         </motion.div>
 
         {/* Main Headline */}
