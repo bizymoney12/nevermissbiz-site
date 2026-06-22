@@ -145,30 +145,6 @@ export function Hero() {
           </Button>
         </motion.div>
 
-        {/* Stats Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="grid grid-cols-2 gap-4 max-w-2xl mx-auto"
-        >
-          {[
-            { value: "0", label: "Leads Lost After Hours" },
-            { value: "24/7", label: "Always On — Day & Night" },
-            { value: "100%", label: "Calls Captured" },
-            { value: "48hr", label: "Setup Time" },
-          ].map((stat, i) => (
-            <div
-              key={i}
-              className="bg-[#09090b] border-t-2 border-[#D4AF37] rounded-xl p-6 md:p-8 flex flex-col items-center text-center"
-            >
-              <span className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#D4AF37] mb-2">
-                {stat.value}
-              </span>
-              <span className="text-sm text-muted-foreground">{stat.label}</span>
-            </div>
-          ))}
-        </motion.div>
       </div>
 
       {/* Bottom gradient fade */}
