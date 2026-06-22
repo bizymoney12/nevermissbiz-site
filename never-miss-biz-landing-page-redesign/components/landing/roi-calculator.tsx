@@ -50,8 +50,8 @@ export function ROICalculator() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-16"
         >
-          How much are you{" "}
-          <span className="text-[#D4AF37]">losing?</span>
+          Let's put a number{" "}
+<span className="text-[#D4AF37]">on it.</span>
         </motion.h2>
 
         {/* Calculator */}
@@ -135,9 +135,9 @@ export function ROICalculator() {
             </p>
             <p className="text-lg text-muted-foreground mb-6">on the table every month</p>
             
-            <p className="text-muted-foreground mb-8">
-              Book a free 15-minute call to see what we can recover for you. <span className="text-[#D4AF37] font-semibold">Your potential ROI: {roi}x</span>
-            </p>
+           <p className="text-muted-foreground mb-8">
+  Book a free 15-minute call to see what we can recover for you.
+</p>
 
             <Button 
               size="lg" 
