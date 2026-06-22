@@ -1,5 +1,6 @@
 import { Header } from "@/components/landing/header";
 import { Hero } from "@/components/landing/hero";
+import { InnerMonologue } from "@/components/landing/inner-monologue";
 import { ROICalculator } from "@/components/landing/roi-calculator";
 import { Problem } from "@/components/landing/problem";
 import { HowItWorks } from "@/components/landing/how-it-works";
@@ -13,6 +14,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#09090b]">
       <Header />
       <Hero />
+      <InnerMonologue />
       <ROICalculator />
       <Problem />
       <HowItWorks />
