@@ -38,7 +38,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#09090b]">
+    <section ref={ref} className="relative flex items-center justify-center overflow-hidden bg-[#09090b]">
       {/* Background Elements */}
       <div className="absolute inset-0 grid-pattern" />
 
