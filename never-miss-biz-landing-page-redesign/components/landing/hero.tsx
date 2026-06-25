@@ -48,6 +48,8 @@ export function Hero() {
         className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#D4AF37]/10 rounded-full blur-[100px] animate-pulse-glow"
         style={{ animationDelay: "2s" }}
       />
+      {/* Centered glow behind the 3D phone */}
+<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#D4AF37]/15 rounded-full blur-[140px]" />
 
       {/* Floating particles — slow-drifting signal blips */}
       <HeroParticles />
