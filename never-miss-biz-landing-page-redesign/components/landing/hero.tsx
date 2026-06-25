@@ -3,6 +3,8 @@ import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { HeroParticles } from "./hero-particles";
+import { HeroPhone3D } from "./hero-phone-3d";
 
 const BOOKING_URL = "https://api.leadconnectorhq.com/widget/booking/2D03AJHPVtlSaiidxOrw";
 
@@ -47,21 +49,11 @@ export function Hero() {
         style={{ animationDelay: "2s" }}
       />
 
-      {/* Floating particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-[#D4AF37]/40 rounded-full animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 8}s`,
-              animationDuration: `${8 + Math.random() * 4}s`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Floating particles — slow-drifting signal blips */}
+      <HeroParticles />
+
+      {/* 3D phone centerpiece — tilts toward cursor, sits behind the headline */}
+      <HeroPhone3D />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-32 pb-20">
 
