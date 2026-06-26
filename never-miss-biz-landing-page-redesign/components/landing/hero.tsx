@@ -106,31 +106,21 @@ export function Hero() {
           appointment, and protects your revenue. Automatically.
         </motion.p>
 
-        {/* CTA Buttons */}
+        {/* CTA Button — single, wide, pulsating gold-glow border */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-2 md:mb-4"
+          className="flex justify-center mb-2 md:mb-4"
         >
           <Button
             size="lg"
-            className="bg-[#D4AF37] text-[#09090b] hover:bg-[#D4AF37]/90 rounded-full px-8 py-6 text-base font-medium group"
+            className="cta-glow-pulse bg-[#09090b] border border-[#D4AF37] text-white hover:bg-[#D4AF37]/10 rounded-full px-12 md:px-16 py-6 text-base md:text-lg font-semibold tracking-wide group"
             asChild
           >
             <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
               Book a Demo
               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="bg-[#09090b] border-border text-foreground hover:bg-[#171717] rounded-full px-8 py-6 text-base"
-            asChild
-          >
-            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
-              Get Started
             </a>
           </Button>
         </motion.div>
