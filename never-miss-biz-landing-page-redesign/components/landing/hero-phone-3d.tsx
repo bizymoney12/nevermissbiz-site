@@ -4,8 +4,9 @@ import * as THREE from "three";
 
 /**
  * 3D rotating phone centerpiece for the hero. Tilts toward the cursor,
- * shows a soft gold waveform on the screen, and pulses outward signal
- * rings — representing an incoming call being caught instead of missed.
+ * and plays a looping SMS conversation on screen showing the actual
+ * missed-call-recovery flow: missed call → automated text → reply →
+ * booked confirmation.
  *
  * All geometry/material/texture disposal happens in the effect cleanup
  * to avoid leaking WebGL resources across client-side navigations.
@@ -28,20 +29,21 @@ export function HeroPhone3D() {
     const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
     camera.position.set(0, 0, 9);
 
-  // Lighting — warm gold key light, cool fill, soft ambient for that glossy look
-  // Note: intensities are higher than they'd "look like they should be" because three.js's
-  // physically-correct lighting model (default since r155) requires much larger numbers
-  // than the old simplified model for the same visual brightness — roughly a 4π factor.
-  scene.add(new THREE.AmbientLight(0x404040, 3));
-  const keyLight = new THREE.PointLight(0xd4af37, 90, 30);
-  keyLight.position.set(4, 4, 6);
-  scene.add(keyLight);
-  const fillLight = new THREE.PointLight(0x6e89ff, 50, 30);
-  fillLight.position.set(-5, -2, 4);
-  scene.add(fillLight);
-  const rimLight = new THREE.PointLight(0xffffff, 63, 30);
-  rimLight.position.set(0, 5, -5);
-  scene.add(rimLight);
+    // Lighting — pushed well past "looks right" on paper because three.js's
+    // physically-correct lighting model (default since r155) needs much larger
+    // numbers than the old simplified model for the same visual brightness.
+    // Materials below also carry their own small self-emissive glow as a safety
+    // net so the phone is never fully dependent on getting this math exactly right.
+    scene.add(new THREE.AmbientLight(0x404040, 5));
+    const keyLight = new THREE.PointLight(0xd4af37, 160, 30);
+    keyLight.position.set(4, 4, 6);
+    scene.add(keyLight);
+    const fillLight = new THREE.PointLight(0x6e89ff, 90, 30);
+    fillLight.position.set(-5, -2, 4);
+    scene.add(fillLight);
+    const rimLight = new THREE.PointLight(0xffffff, 110, 30);
+    rimLight.position.set(0, 5, -5);
+    scene.add(rimLight);
 
     const phoneGroup = new THREE.Group();
     phoneGroup.scale.set(0.62, 0.62, 0.62);
@@ -83,7 +85,8 @@ export function HeroPhone3D() {
       return s;
     }
 
-    // Bezel — modern rounded metal frame
+    // Bezel — modern rounded metal frame. Small self-emissive glow so it
+    // never goes fully dark even in worst-case lighting conditions.
     const bezelGeo = new THREE.ExtrudeGeometry(roundedRect(2.05, 4.1, 0.32), {
       depth: 0.32,
       bevelEnabled: true,
@@ -98,11 +101,13 @@ export function HeroPhone3D() {
       metalness: 0.92,
       roughness: 0.18,
       envMapIntensity: 1.1,
+      emissive: 0xd4af37,
+      emissiveIntensity: 0.18,
     });
     const bezel = new THREE.Mesh(bezelGeo, bezelMat);
     phoneGroup.add(bezel);
 
-    // Body — dark glass insert
+    // Body — dark glass insert, with a faint warm self-glow instead of pure black
     const bodyGeo = new THREE.ExtrudeGeometry(roundedRect(1.88, 3.92, 0.28), {
       depth: 0.26,
       bevelEnabled: true,
@@ -117,52 +122,168 @@ export function HeroPhone3D() {
       metalness: 0.4,
       roughness: 0.22,
       envMapIntensity: 1.3,
+      emissive: 0x1a140a,
+      emissiveIntensity: 0.4,
     });
     const body = new THREE.Mesh(bodyGeo, bodyMat);
     body.position.z = 0.07;
     phoneGroup.add(body);
 
-    // Screen — designed waveform graphic, flat plane for reliable UV mapping
-    // (ExtrudeGeometry doesn't normalize UVs for custom shapes, which distorts textures)
-    function buildScreenTexture() {
-      const c = document.createElement("canvas");
-      c.width = 420;
-      c.height = 900;
-      const cx = c.getContext("2d")!;
-      cx.fillStyle = "#0d0a05";
-      cx.fillRect(0, 0, c.width, c.height);
+    // ---- Screen: looping SMS conversation showing the actual product flow ----
+    const SCREEN_W = 420;
+    const SCREEN_H = 900;
+    const LOOP_DURATION = 14; // seconds, full conversation cycle
 
-      cx.fillStyle = "rgba(212,175,55,0.35)";
-      for (let i = 0; i < 4; i++) {
-        cx.beginPath();
-        cx.arc(168 + i * 22, 46, 3.5, 0, Math.PI * 2);
-        cx.fill();
-      }
+    const screenCanvas = document.createElement("canvas");
+    screenCanvas.width = SCREEN_W;
+    screenCanvas.height = SCREEN_H;
+    const sctx = screenCanvas.getContext("2d")!;
 
-      const barCount = 26;
-      const barWidth = 7;
-      const gap = 6;
-      const totalWidth = barCount * (barWidth + gap);
-      const startX = (c.width - totalWidth) / 2;
-      const centerY = c.height * 0.56;
-      cx.shadowColor = "rgba(212,175,55,0.55)";
-      cx.shadowBlur = 16;
-      for (let i = 0; i < barCount; i++) {
-        const h = 16 + Math.abs(Math.sin(i * 0.45)) * 85 + Math.random() * 10;
-        cx.fillStyle = "rgba(212,175,55,0.55)";
-        cx.fillRect(startX + i * (barWidth + gap), centerY - h / 2, barWidth, h);
-      }
-      cx.shadowBlur = 0;
-      return new THREE.CanvasTexture(c);
+    function roundRectPath(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+      c.beginPath();
+      c.moveTo(x + r, y);
+      c.lineTo(x + w - r, y);
+      c.quadraticCurveTo(x + w, y, x + w, y + r);
+      c.lineTo(x + w, y + h - r);
+      c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      c.lineTo(x + r, y + h);
+      c.quadraticCurveTo(x, y + h, x, y + h - r);
+      c.lineTo(x, y + r);
+      c.quadraticCurveTo(x, y, x + r, y);
+      c.closePath();
     }
 
+    function wrapText(c: CanvasRenderingContext2D, text: string, maxWidth: number) {
+      const words = text.split(" ");
+      const lines: string[] = [];
+      let current = "";
+      for (const word of words) {
+        const test = current ? current + " " + word : word;
+        if (c.measureText(test).width > maxWidth && current) {
+          lines.push(current);
+          current = word;
+        } else {
+          current = test;
+        }
+      }
+      if (current) lines.push(current);
+      return lines;
+    }
+
+    function drawBubble(
+      c: CanvasRenderingContext2D,
+      text: string,
+      align: "left" | "right",
+      bg: string,
+      fg: string,
+      y: number,
+      maxBubbleWidth: number
+    ) {
+      const padX = 16, padY = 10, lineHeight = 22, fontSize = 16;
+      c.font = `${fontSize}px -apple-system, Helvetica, Arial, sans-serif`;
+      const lines = wrapText(c, text, maxBubbleWidth - padX * 2);
+      const textWidth = Math.max(...lines.map((l) => c.measureText(l).width));
+      const bubbleWidth = Math.min(maxBubbleWidth, textWidth + padX * 2);
+      const bubbleHeight = lines.length * lineHeight + padY * 2;
+      const x = align === "right" ? SCREEN_W - 24 - bubbleWidth : 24;
+
+      c.fillStyle = bg;
+      roundRectPath(c, x, y, bubbleWidth, bubbleHeight, 16);
+      c.fill();
+
+      c.fillStyle = fg;
+      c.textAlign = "left";
+      c.textBaseline = "top";
+      lines.forEach((line, i) => {
+        c.fillText(line, x + padX, y + padY + i * lineHeight + 2);
+      });
+
+      return y + bubbleHeight;
+    }
+
+    function drawTyping(c: CanvasRenderingContext2D, y: number, phase: number) {
+      const w = 64, h = 38;
+      c.fillStyle = "#1f1f23";
+      roundRectPath(c, 24, y, w, h, 18);
+      c.fill();
+      for (let i = 0; i < 3; i++) {
+        c.beginPath();
+        const dotY = y + h / 2 + (i === phase ? -3 : 0);
+        c.arc(24 + 18 + i * 14, dotY, 3.5, 0, Math.PI * 2);
+        c.fillStyle = i === phase ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)";
+        c.fill();
+      }
+      return y + h;
+    }
+
+    function drawScreen(cycleT: number) {
+      sctx.clearRect(0, 0, SCREEN_W, SCREEN_H);
+      sctx.fillStyle = "#0d0a05";
+      sctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
+
+      // Header
+      sctx.textAlign = "center";
+      sctx.textBaseline = "top";
+      sctx.fillStyle = "rgba(212,175,55,0.9)";
+      sctx.font = "bold 19px -apple-system, Helvetica, Arial, sans-serif";
+      sctx.fillText("Tina · AI Assistant", SCREEN_W / 2, 68);
+      sctx.fillStyle = "rgba(255,255,255,0.15)";
+      sctx.fillRect(40, 102, SCREEN_W - 80, 1.5);
+      sctx.textAlign = "left";
+
+      const maxWidth = 300;
+      let y = 128;
+
+      if (cycleT > 1.0) {
+        sctx.font = "13px -apple-system, Helvetica, Arial, sans-serif";
+        const label = "Missed Call · (407) 555-0182";
+        const w = sctx.measureText(label).width + 32;
+        const px = (SCREEN_W - w) / 2;
+        sctx.fillStyle = "rgba(255,255,255,0.08)";
+        roundRectPath(sctx, px, y, w, 30, 15);
+        sctx.fill();
+        sctx.fillStyle = "rgba(255,255,255,0.55)";
+        sctx.textAlign = "center";
+        sctx.fillText(label, SCREEN_W / 2, y + 8);
+        sctx.textAlign = "left";
+        y += 30 + 22;
+      }
+
+      if (cycleT > 2.8) {
+        y = drawBubble(
+          sctx,
+          "Hey! Sorry we missed your call \uD83D\uDC4B Want to grab a time?",
+          "right",
+          "#D4AF37",
+          "#1a1407",
+          y,
+          maxWidth
+        );
+        y += 18;
+      }
+
+      if (cycleT > 5.0 && cycleT <= 6.4) {
+        const phase = Math.floor((cycleT * 3) % 3);
+        y = drawTyping(sctx, y, phase);
+        y += 18;
+      } else if (cycleT > 6.4) {
+        y = drawBubble(sctx, "Yes! Tomorrow 2pm?", "left", "#1f1f23", "#f5f1e6", y, maxWidth);
+        y += 18;
+      }
+
+      if (cycleT > 8.2) {
+        drawBubble(sctx, "Perfect, you're booked \u2705", "right", "#D4AF37", "#1a1407", y, maxWidth);
+      }
+    }
+
+    drawScreen(0);
+    const screenTexture = new THREE.CanvasTexture(screenCanvas);
     const screenGeo = new THREE.PlaneGeometry(1.5, 3.3);
-    const screenTexture = buildScreenTexture();
     const screenMat = new THREE.MeshStandardMaterial({
       map: screenTexture,
       emissiveMap: screenTexture,
       emissive: 0xd4af37,
-      emissiveIntensity: 0.55,
+      emissiveIntensity: 0.5,
       color: 0xffffff,
       metalness: 0.1,
       roughness: 0.6,
@@ -221,8 +342,10 @@ export function HeroPhone3D() {
 
     const clock = new THREE.Clock();
     let frameId = 0;
+    let lastDrawTick = -1;
     function animate() {
       const t = clock.getElapsedTime();
+      const cycleT = t % LOOP_DURATION;
 
       phoneGroup.rotation.y += (targetRotY - phoneGroup.rotation.y) * 0.06;
       phoneGroup.rotation.x += (-targetRotX - phoneGroup.rotation.x) * 0.06;
@@ -237,8 +360,14 @@ export function HeroPhone3D() {
           local < 0.08 ? 0 : (1 - local) * 0.35;
       });
 
-      (screen.material as THREE.MeshStandardMaterial).emissiveIntensity =
-        0.55 + Math.sin(t * 1.1) * 0.1;
+      // Redraw the screen ~10x/sec — smooth enough for the typing dots,
+      // cheap enough to not matter for performance.
+      const tick = Math.floor(cycleT * 10);
+      if (tick !== lastDrawTick) {
+        lastDrawTick = tick;
+        drawScreen(cycleT);
+        screenTexture.needsUpdate = true;
+      }
 
       renderer.render(scene, camera);
       frameId = requestAnimationFrame(animate);
