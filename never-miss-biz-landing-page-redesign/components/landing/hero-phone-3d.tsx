@@ -134,12 +134,15 @@ export function HeroPhone3D() {
     // ---- Screen: looping SMS conversation showing the actual product flow ----
     const SCREEN_W = 420;
     const SCREEN_H = 900;
+    const RES_SCALE = 2; // render at 2x and let the context scale handle it — keeps
+    // every existing pixel value below correct while doubling actual sharpness
     const LOOP_DURATION = 18; // seconds, full conversation cycle
 
     const screenCanvas = document.createElement("canvas");
-    screenCanvas.width = SCREEN_W;
-    screenCanvas.height = SCREEN_H;
+    screenCanvas.width = SCREEN_W * RES_SCALE;
+    screenCanvas.height = SCREEN_H * RES_SCALE;
     const sctx = screenCanvas.getContext("2d")!;
+    sctx.scale(RES_SCALE, RES_SCALE);
 
     function roundRectPath(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
       c.beginPath();
@@ -273,16 +276,15 @@ export function HeroPhone3D() {
 
     drawScreen(0);
     const screenTexture = new THREE.CanvasTexture(screenCanvas);
+    screenTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
     const screenGeo = new THREE.PlaneGeometry(1.5, 3.3);
-    const screenMat = new THREE.MeshStandardMaterial({
+    // MeshBasicMaterial is unlit — the screen renders exactly as drawn on the
+    // canvas regardless of scene lighting, which is also how a real phone
+    // screen behaves (self-lit, not reflecting ambient light much). This is
+    // what actually fixes the crispness — no more diffuse/specular softening
+    // from the point lights affecting the text.
+    const screenMat = new THREE.MeshBasicMaterial({
       map: screenTexture,
-      emissiveMap: screenTexture,
-      emissive: 0xd4af37,
-      emissiveIntensity: 0.5,
-      color: 0xffffff,
-      metalness: 0.1,
-      roughness: 0.6,
-      envMapIntensity: 0,
     });
     const screen = new THREE.Mesh(screenGeo, screenMat);
     screen.position.z = 0.23;
