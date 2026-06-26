@@ -130,6 +130,18 @@ export function Hero() {
             the vertical room so it has its own clear zone, not overlapping text */}
         <div className="h-[230px] md:h-[440px]" aria-hidden="true" />
 
+        {/* Caption below the phone */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="text-center -mt-4 md:-mt-2"
+        >
+          <span className="text-lg md:text-xl font-semibold text-[#D4AF37] text-glow">
+            Job Booked. Automatically.
+          </span>
+        </motion.div>
+
       </div>
 
       {/* Bottom gradient fade */}
