@@ -203,36 +203,36 @@ export function HeroPhone3D() {
     }
 
     function drawTyping(c: CanvasRenderingContext2D, phase: number) {
-      const w = 110, h = 64;
+      const w = 140, h = 80;
       const x = (SCREEN_W - w) / 2;
       const y = (SCREEN_H - h) / 2;
       c.fillStyle = "#1f1f23";
-      roundRectPath(c, x, y, w, h, 28);
+      roundRectPath(c, x, y, w, h, 32);
       c.fill();
       for (let i = 0; i < 3; i++) {
         c.beginPath();
-        const dotY = y + h / 2 + (i === phase ? -5 : 0);
-        c.arc(x + 30 + i * 26, dotY, 6, 0, Math.PI * 2);
+        const dotY = y + h / 2 + (i === phase ? -6 : 0);
+        c.arc(x + 38 + i * 32, dotY, 7.5, 0, Math.PI * 2);
         c.fillStyle = i === phase ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)";
         c.fill();
       }
     }
 
     function drawMissedCallCard(c: CanvasRenderingContext2D) {
-      const w = 300, h = 110;
+      const w = 340, h = 140;
       const x = (SCREEN_W - w) / 2;
       const y = (SCREEN_H - h) / 2;
       c.fillStyle = "rgba(255,255,255,0.07)";
-      roundRectPath(c, x, y, w, h, 20);
+      roundRectPath(c, x, y, w, h, 24);
       c.fill();
       c.textAlign = "center";
       c.textBaseline = "top";
-      c.fillStyle = "rgba(255,255,255,0.5)";
-      c.font = "15px -apple-system, Helvetica, Arial, sans-serif";
-      c.fillText("MISSED CALL", SCREEN_W / 2, y + 26);
+      c.fillStyle = "rgba(255,255,255,0.55)";
+      c.font = "bold 19px -apple-system, Helvetica, Arial, sans-serif";
+      c.fillText("MISSED CALL", SCREEN_W / 2, y + 30);
       c.fillStyle = "#ffffff";
-      c.font = "bold 24px -apple-system, Helvetica, Arial, sans-serif";
-      c.fillText("(407) 555-0182", SCREEN_W / 2, y + 56);
+      c.font = "bold 34px -apple-system, Helvetica, Arial, sans-serif";
+      c.fillText("(407) 555-0182", SCREEN_W / 2, y + 68);
     }
 
     // ---- One message at a time, large and centered — far more legible
@@ -245,25 +245,25 @@ export function HeroPhone3D() {
       // Header (always visible)
       sctx.textAlign = "center";
       sctx.textBaseline = "top";
-      sctx.fillStyle = "rgba(212,175,55,0.85)";
-      sctx.font = "bold 22px -apple-system, Helvetica, Arial, sans-serif";
-      sctx.fillText("Tina · AI Assistant", SCREEN_W / 2, 56);
+      sctx.fillStyle = "rgba(212,175,55,0.9)";
+      sctx.font = "bold 28px -apple-system, Helvetica, Arial, sans-serif";
+      sctx.fillText("AUTOMATED", SCREEN_W / 2, 54);
       sctx.fillStyle = "rgba(255,255,255,0.15)";
-      sctx.fillRect(40, 90, SCREEN_W - 80, 1.5);
+      sctx.fillRect(40, 96, SCREEN_W - 80, 1.5);
 
-      const maxWidth = 340;
+      const maxWidth = 360;
 
       if (cycleT <= 1.8) {
         drawMissedCallCard(sctx);
       } else if (cycleT <= 4.4) {
-        drawBubble(sctx, "Sorry we missed your call! Want to grab a time?", "#D4AF37", "#1a1407", maxWidth, 22);
+        drawBubble(sctx, "Missed your call \u2014 got a time?", "#D4AF37", "#1a1407", maxWidth, 32);
       } else if (cycleT <= 5.8) {
         const phase = Math.floor((cycleT * 3) % 3);
         drawTyping(sctx, phase);
       } else if (cycleT <= 8.4) {
-        drawBubble(sctx, "Yes! Tomorrow 2pm?", "#1f1f23", "#f5f1e6", maxWidth, 24);
+        drawBubble(sctx, "Yes, 2pm works!", "#1f1f23", "#f5f1e6", maxWidth, 34);
       } else if (cycleT <= 12.0) {
-        drawBubble(sctx, "Booked for 2pm \u2705", "#D4AF37", "#1a1407", maxWidth, 26);
+        drawBubble(sctx, "Booked for 2pm \u2705", "#D4AF37", "#1a1407", maxWidth, 36);
       }
     }
 
