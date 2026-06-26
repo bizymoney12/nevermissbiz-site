@@ -38,7 +38,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section ref={ref} className="relative overflow-hidden bg-[#09090b] pt-20 md:pt-32 pb-20">
+    <section ref={ref} className="relative overflow-hidden bg-[#09090b] pt-16 md:pt-32 pb-20">
       {/* Background Elements */}
       <div className="absolute inset-0 grid-pattern" />
 
@@ -62,9 +62,9 @@ export function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-center mb-4"
+          className="text-center mb-3 md:mb-4"
         >
-          <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white text-glow-white mb-4 leading-tight">
+          <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[#D4AF37] text-glow mb-4 leading-tight">
             While You&apos;re On the Job,
             <br />
             We&apos;re Booking Your Next One.
@@ -76,7 +76,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mb-8"
+          className="text-center mb-4 md:mb-8"
         >
           <p className="text-xl md:text-2xl text-white/60 font-normal">
             Built for{" "}
@@ -100,7 +100,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-center mb-10 text-balance"
+          className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-center mb-5 md:mb-10 text-balance"
         >
           Responds to every unanswered call. Qualifies the lead, books the
           appointment, and protects your revenue. Automatically.
@@ -111,7 +111,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-4"
+          className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-2 md:mb-4"
         >
           <Button
             size="lg"
@@ -119,7 +119,7 @@ export function Hero() {
             asChild
           >
             <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
-              See It In Action
+              Book a Demo
               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </a>
           </Button>
@@ -138,7 +138,7 @@ export function Hero() {
         {/* Reserved space for the 3D phone showcase below — the phone itself
             renders via the full-bleed HeroPhone3D canvas, this just reserves
             the vertical room so it has its own clear zone, not overlapping text */}
-        <div className="h-[260px] md:h-[440px]" aria-hidden="true" />
+        <div className="h-[230px] md:h-[440px]" aria-hidden="true" />
 
       </div>
 
