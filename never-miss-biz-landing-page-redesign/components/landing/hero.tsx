@@ -38,7 +38,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#09090b]">
+    <section ref={ref} className="relative overflow-hidden bg-[#09090b] pt-28 md:pt-36 pb-20">
       {/* Background Elements */}
       <div className="absolute inset-0 grid-pattern" />
 
@@ -52,10 +52,10 @@ export function Hero() {
       {/* Floating particles — slow-drifting signal blips */}
       <HeroParticles />
 
-      {/* 3D phone centerpiece — tilts toward cursor, sits behind the headline */}
+      {/* 3D phone centerpiece — tilts toward cursor, showcased in its own zone below the headline */}
       <HeroPhone3D />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-32 pb-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
 
         {/* Main Headline */}
         <motion.div
@@ -111,7 +111,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+          className="flex flex-col sm:flex-row gap-4 justify-center mb-4"
         >
           <Button
             size="lg"
@@ -134,6 +134,11 @@ export function Hero() {
             </a>
           </Button>
         </motion.div>
+
+        {/* Reserved space for the 3D phone showcase below — the phone itself
+            renders via the full-bleed HeroPhone3D canvas, this just reserves
+            the vertical room so it has its own clear zone, not overlapping text */}
+        <div className="h-[420px] md:h-[560px]" aria-hidden="true" />
 
       </div>
 
