@@ -136,7 +136,7 @@ export function HeroPhone3D() {
     const SCREEN_H = 900;
     const RES_SCALE = 2; // render at 2x and let the context scale handle it — keeps
     // every existing pixel value below correct while doubling actual sharpness
-    const LOOP_DURATION = 18; // seconds, full conversation cycle
+    const LOOP_DURATION = 15.5; // seconds, full conversation cycle
 
     const screenCanvas = document.createElement("canvas");
     screenCanvas.width = SCREEN_W * RES_SCALE;
@@ -175,52 +175,6 @@ export function HeroPhone3D() {
       return lines;
     }
 
-    function drawBubble(
-      c: CanvasRenderingContext2D,
-      text: string,
-      bg: string,
-      fg: string,
-      maxBubbleWidth: number,
-      fontSize: number
-    ) {
-      const padX = 26, padY = 22, lineHeight = fontSize + 12;
-      c.font = `bold ${fontSize}px -apple-system, Helvetica, Arial, sans-serif`;
-      const lines = wrapText(c, text, maxBubbleWidth - padX * 2);
-      const textWidth = Math.max(...lines.map((l) => c.measureText(l).width));
-      const bubbleWidth = Math.min(maxBubbleWidth, textWidth + padX * 2);
-      const bubbleHeight = lines.length * lineHeight + padY * 2;
-      const x = (SCREEN_W - bubbleWidth) / 2;
-      const y = (SCREEN_H - bubbleHeight) / 2;
-
-      c.fillStyle = bg;
-      roundRectPath(c, x, y, bubbleWidth, bubbleHeight, 22);
-      c.fill();
-
-      c.fillStyle = fg;
-      c.textAlign = "left";
-      c.textBaseline = "top";
-      lines.forEach((line, i) => {
-        const lineWidth = c.measureText(line).width;
-        c.fillText(line, x + (bubbleWidth - lineWidth) / 2, y + padY + i * lineHeight + 2);
-      });
-    }
-
-    function drawTyping(c: CanvasRenderingContext2D, phase: number) {
-      const w = 140, h = 80;
-      const x = (SCREEN_W - w) / 2;
-      const y = (SCREEN_H - h) / 2;
-      c.fillStyle = "#1f1f23";
-      roundRectPath(c, x, y, w, h, 32);
-      c.fill();
-      for (let i = 0; i < 3; i++) {
-        c.beginPath();
-        const dotY = y + h / 2 + (i === phase ? -6 : 0);
-        c.arc(x + 38 + i * 32, dotY, 7.5, 0, Math.PI * 2);
-        c.fillStyle = i === phase ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)";
-        c.fill();
-      }
-    }
-
     function drawMissedCallCard(c: CanvasRenderingContext2D) {
       const w = 340, h = 140;
       const x = (SCREEN_W - w) / 2;
@@ -238,8 +192,84 @@ export function HeroPhone3D() {
       c.fillText("(407) 555-0182", SCREEN_W / 2, y + 68);
     }
 
-    // ---- One message at a time, large and centered — far more legible
-    // at small phone sizes than a stacked conversation thread ----
+    // ---- Conversation thread setup — bubbles accumulate and the stack
+    // scrolls upward as new ones arrive, same as a real phone, instead of
+    // swapping one message at a time. ----
+    const BUBBLE_FONT = 20;
+    const BUBBLE_LINE_H = BUBBLE_FONT + 10;
+    const BUBBLE_PAD_X = 18;
+    const BUBBLE_PAD_Y = 14;
+    const BUBBLE_GAP = 12;
+    const BUBBLE_MAX_W = 300;
+    const MSG_AREA_TOP = 112;
+    const MSG_AREA_BOTTOM = SCREEN_H - 22;
+
+    function measureBubble(c: CanvasRenderingContext2D, text: string) {
+      c.font = `600 ${BUBBLE_FONT}px -apple-system, Helvetica, Arial, sans-serif`;
+      const lines = wrapText(c, text, BUBBLE_MAX_W - BUBBLE_PAD_X * 2);
+      const textWidth = Math.max(...lines.map((l) => c.measureText(l).width));
+      const bubbleWidth = Math.min(BUBBLE_MAX_W, textWidth + BUBBLE_PAD_X * 2);
+      const bubbleHeight = lines.length * BUBBLE_LINE_H + BUBBLE_PAD_Y * 2;
+      return { lines, bubbleWidth, bubbleHeight };
+    }
+
+    function drawBubbleAt(
+      c: CanvasRenderingContext2D,
+      text: string,
+      align: "left" | "right",
+      bg: string,
+      fg: string,
+      bottomY: number
+    ) {
+      const { lines, bubbleWidth, bubbleHeight } = measureBubble(c, text);
+      const x = align === "right" ? SCREEN_W - 20 - bubbleWidth : 20;
+      const y = bottomY - bubbleHeight;
+      c.fillStyle = bg;
+      roundRectPath(c, x, y, bubbleWidth, bubbleHeight, 18);
+      c.fill();
+      c.fillStyle = fg;
+      c.textAlign = "left";
+      c.textBaseline = "top";
+      lines.forEach((line, i) => {
+        c.fillText(line, x + BUBBLE_PAD_X, y + BUBBLE_PAD_Y + i * BUBBLE_LINE_H + 1);
+      });
+      return bubbleHeight;
+    }
+
+    function drawTypingAt(c: CanvasRenderingContext2D, align: "left" | "right", bottomY: number, phase: number) {
+      const w = 84, h = 50;
+      const x = align === "right" ? SCREEN_W - 20 - w : 20;
+      const y = bottomY - h;
+      c.fillStyle = "#1f1f23";
+      roundRectPath(c, x, y, w, h, 24);
+      c.fill();
+      for (let i = 0; i < 3; i++) {
+        c.beginPath();
+        const dotY = y + h / 2 + (i === phase ? -4 : 0);
+        c.arc(x + 22 + i * 20, dotY, 5, 0, Math.PI * 2);
+        c.fillStyle = i === phase ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)";
+        c.fill();
+      }
+      return h;
+    }
+
+    type ConvoEvent =
+      | { t: number; type: "typing"; align: "left" | "right" }
+      | { t: number; type: "msg"; align: "left" | "right"; bg: string; fg: string; text: string };
+
+    const events: ConvoEvent[] = [
+      { t: 2.0, type: "typing", align: "right" },
+      { t: 2.8, type: "msg", align: "right", bg: "#D4AF37", fg: "#1a1407", text: "Sorry, we missed your call, how can we help?" },
+      { t: 4.2, type: "typing", align: "left" },
+      { t: 5.0, type: "msg", align: "left", bg: "#1f1f23", fg: "#f5f1e6", text: "I'd like to book an appointment!" },
+      { t: 6.4, type: "typing", align: "right" },
+      { t: 7.2, type: "msg", align: "right", bg: "#D4AF37", fg: "#1a1407", text: "We have 2pm or 4pm available, what works best?" },
+      { t: 8.6, type: "typing", align: "left" },
+      { t: 9.4, type: "msg", align: "left", bg: "#1f1f23", fg: "#f5f1e6", text: "Yes, 2pm works!" },
+      { t: 10.8, type: "typing", align: "right" },
+      { t: 11.6, type: "msg", align: "right", bg: "#D4AF37", fg: "#1a1407", text: "All set, booked for 2pm! \u2705" },
+    ];
+
     function drawScreen(cycleT: number) {
       sctx.clearRect(0, 0, SCREEN_W, SCREEN_H);
       sctx.fillStyle = "#0d0a05";
@@ -254,23 +284,41 @@ export function HeroPhone3D() {
       sctx.fillStyle = "rgba(255,255,255,0.15)";
       sctx.fillRect(40, 96, SCREEN_W - 80, 1.5);
 
-      const maxWidth = 360;
-
       if (cycleT <= 1.8) {
         drawMissedCallCard(sctx);
-      } else if (cycleT <= 4.4) {
-        drawBubble(sctx, "Sorry, we missed your call, how can we help?", "#D4AF37", "#1a1407", maxWidth, 32);
-      } else if (cycleT <= 7.0) {
-        drawBubble(sctx, "I'd like to book an appointment!", "#1f1f23", "#f5f1e6", maxWidth, 32);
-      } else if (cycleT <= 9.6) {
-        drawBubble(sctx, "We have 2pm or 4pm available, what work's best?", "#D4AF37", "#1a1407", maxWidth, 32);
-      } else if (cycleT <= 11.0) {
-        const phase = Math.floor((cycleT * 3) % 3);
-        drawTyping(sctx, phase);
-      } else if (cycleT <= 13.6) {
-        drawBubble(sctx, "Yes, 2pm works!", "#1f1f23", "#f5f1e6", maxWidth, 34);
-      } else if (cycleT <= 17.0) {
-        drawBubble(sctx, "All set, booked for 2pm! \u2705", "#D4AF37", "#1a1407", maxWidth, 36);
+        return;
+      }
+
+      // Find active typing indicator: the most recent event at or before
+      // cycleT, if it's a typing event (i.e. we haven't reached its message yet)
+      let activeTyping: "left" | "right" | null = null;
+      for (let i = events.length - 1; i >= 0; i--) {
+        if (events[i].t <= cycleT) {
+          if (events[i].type === "typing") activeTyping = events[i].align;
+          break;
+        }
+      }
+
+      const revealedMsgs = events.filter((e) => e.type === "msg" && e.t <= cycleT) as Extract<ConvoEvent, { type: "msg" }>[];
+
+      // Stack bottom-up: typing indicator (if active) sits at the very
+      // bottom, then revealed messages newest-first, scrolling older ones
+      // up and off the top — exactly like a real phone.
+      let y = MSG_AREA_BOTTOM;
+      const typingPhase = Math.floor((cycleT * 3) % 3);
+
+      if (activeTyping) {
+        y -= drawTypingAt(sctx, activeTyping, y, typingPhase);
+        y -= BUBBLE_GAP;
+      }
+
+      for (let i = revealedMsgs.length - 1; i >= 0; i--) {
+        if (y <= MSG_AREA_TOP) break;
+        const msg = revealedMsgs[i];
+        const { bubbleHeight } = measureBubble(sctx, msg.text);
+        if (y - bubbleHeight < MSG_AREA_TOP) break;
+        drawBubbleAt(sctx, msg.text, msg.align, msg.bg, msg.fg, y);
+        y -= bubbleHeight + BUBBLE_GAP;
       }
     }
 
