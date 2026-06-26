@@ -16,6 +16,7 @@ export function ROICalculator() {
   const [closeRate, setCloseRate] = useState(40);
 
   const monthlyLoss = Math.round((missedCalls * 4.33) * (closeRate / 100) * jobValue);
+  const glowIntensity = Math.min(monthlyLoss / 15000, 1);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -53,12 +54,24 @@ export function ROICalculator() {
 <span className="text-[#D4AF37]">on it.</span>
         </motion.h2>
 
+        {/* Reactive glow — intensifies as the loss number climbs */}
+        <div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none transition-all duration-300"
+          style={{
+            width: 600,
+            height: 600,
+            background: "#D4AF37",
+            opacity: 0.1 + glowIntensity * 0.3,
+            filter: `blur(${100 + glowIntensity * 60}px)`,
+          }}
+        />
+
         {/* Calculator */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-[#09090b] border border-border rounded-2xl p-8 md:p-12"
+          className="relative bg-[#09090b] border border-border rounded-2xl p-8 md:p-12"
         >
           {/* Sliders */}
           <div className="space-y-10 mb-12">
