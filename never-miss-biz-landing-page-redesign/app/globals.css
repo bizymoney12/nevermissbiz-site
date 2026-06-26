@@ -149,6 +149,10 @@
   text-shadow: 0 0 40px rgba(212, 175, 55, 0.5);
 }
 
+.text-glow-white {
+  text-shadow: 0 0 40px rgba(250, 250, 250, 0.4);
+}
+
 /* Gold slider styling */
 .slider-gold {
   -webkit-appearance: none;
@@ -185,4 +189,34 @@
 
 .slider-gold::-moz-range-thumb:hover {
   box-shadow: 0 0 30px rgba(212, 175, 55, 0.7);
+}
+
+/* Problem section — pulse traveling along the "crack" line */
+@keyframes crack-pulse-travel {
+  0% { stroke-dashoffset: 1240; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { stroke-dashoffset: -40; opacity: 0; }
+}
+.crack-pulse {
+  stroke-dashoffset: 1240;
+  filter: drop-shadow(0 0 4px #D4AF37);
+  animation: crack-pulse-travel 4s ease-in-out infinite;
+}
+
+/* Pricing — rotating gold ring around the recommended plan */
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes rotate-border-angle {
+  to { --border-angle: 360deg; }
+}
+.pricing-glow-ring {
+  position: absolute;
+  inset: -2px;
+  border-radius: 1rem;
+  background: conic-gradient(from var(--border-angle), transparent 0%, #D4AF37 12%, transparent 30%);
+  animation: rotate-border-angle 4s linear infinite;
 }
