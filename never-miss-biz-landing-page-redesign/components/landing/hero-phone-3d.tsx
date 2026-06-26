@@ -134,7 +134,7 @@ export function HeroPhone3D() {
     // ---- Screen: looping SMS conversation showing the actual product flow ----
     const SCREEN_W = 420;
     const SCREEN_H = 900;
-    const LOOP_DURATION = 13; // seconds, full conversation cycle
+    const LOOP_DURATION = 18; // seconds, full conversation cycle
 
     const screenCanvas = document.createElement("canvas");
     screenCanvas.width = SCREEN_W;
@@ -256,13 +256,17 @@ export function HeroPhone3D() {
       if (cycleT <= 1.8) {
         drawMissedCallCard(sctx);
       } else if (cycleT <= 4.4) {
-        drawBubble(sctx, "Missed your call \u2014 got a time?", "#D4AF37", "#1a1407", maxWidth, 32);
-      } else if (cycleT <= 5.8) {
+        drawBubble(sctx, "Missed your call, how can we help?", "#D4AF37", "#1a1407", maxWidth, 28);
+      } else if (cycleT <= 7.0) {
+        drawBubble(sctx, "I'd like to book an appointment", "#1f1f23", "#f5f1e6", maxWidth, 28);
+      } else if (cycleT <= 9.6) {
+        drawBubble(sctx, "We have 2pm or 4pm available", "#D4AF37", "#1a1407", maxWidth, 28);
+      } else if (cycleT <= 11.0) {
         const phase = Math.floor((cycleT * 3) % 3);
         drawTyping(sctx, phase);
-      } else if (cycleT <= 8.4) {
+      } else if (cycleT <= 13.6) {
         drawBubble(sctx, "Yes, 2pm works!", "#1f1f23", "#f5f1e6", maxWidth, 34);
-      } else if (cycleT <= 12.0) {
+      } else if (cycleT <= 17.0) {
         drawBubble(sctx, "Booked for 2pm \u2705", "#D4AF37", "#1a1407", maxWidth, 36);
       }
     }
