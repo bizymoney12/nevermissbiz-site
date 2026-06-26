@@ -17,6 +17,7 @@ export function ROICalculator() {
 
   const monthlyLoss = Math.round((missedCalls * 4.33) * (closeRate / 100) * jobValue);
   const glowIntensity = Math.min(monthlyLoss / 15000, 1);
+  const lostJobs = Math.max(1, Math.round((missedCalls * 4.33 * closeRate) / 100));
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -145,7 +146,10 @@ export function ROICalculator() {
             <p className="text-5xl md:text-6xl lg:text-7xl font-bold text-[#D4AF37] mb-4">
               {formatCurrency(monthlyLoss)}
             </p>
-            <p className="text-lg text-muted-foreground mb-6">on the table every month</p>
+            <p className="text-lg text-muted-foreground mb-2">on the table every month</p>
+            <p className="text-base text-white/50 mb-6">
+              That&apos;s roughly <span className="text-[#D4AF37] font-semibold">{lostJobs} missed job{lostJobs === 1 ? "" : "s"}</span> a month, gone to someone else.
+            </p>
             
            <p className="text-muted-foreground mb-8">
   Book a free 15-minute call to see what we can recover for you.
