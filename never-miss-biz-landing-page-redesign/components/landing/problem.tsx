@@ -82,7 +82,30 @@ export function Problem() {
         </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-border rounded-2xl overflow-hidden">
+        <div className="relative grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-border rounded-2xl overflow-hidden">
+          {/* Animated "crack" — money slipping through, literally */}
+          <svg
+            className="absolute left-0 right-0 top-1/2 -translate-y-1/2 w-full h-20 pointer-events-none hidden lg:block"
+            viewBox="0 0 1200 100"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M0,52 L150,46 L280,60 L420,38 L580,56 L720,40 L860,54 L1020,44 L1200,50"
+              stroke="#D4AF37"
+              strokeWidth="1"
+              fill="none"
+              opacity="0.18"
+            />
+            <path
+              d="M0,52 L150,46 L280,60 L420,38 L580,56 L720,40 L860,54 L1020,44 L1200,50"
+              stroke="#D4AF37"
+              strokeWidth="2"
+              fill="none"
+              strokeDasharray="40 1200"
+              className="crack-pulse"
+            />
+          </svg>
           {stats.map((stat, index) => (
             <motion.div
               key={index}
