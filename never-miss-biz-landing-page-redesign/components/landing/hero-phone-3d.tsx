@@ -45,9 +45,11 @@ export function HeroPhone3D() {
     rimLight.position.set(0, 5, -5);
     scene.add(rimLight);
 
+    const isMobile = window.innerWidth < 768;
     const phoneGroup = new THREE.Group();
-    phoneGroup.scale.set(0.85, 0.85, 0.85);
-    phoneGroup.position.set(0, -2.2, -1.4);
+    phoneGroup.scale.set(isMobile ? 0.46 : 0.68, isMobile ? 0.46 : 0.68, isMobile ? 0.46 : 0.68);
+    let baseY = isMobile ? -1.5 : -1.9;
+    phoneGroup.position.set(0, baseY, -1.4);
     scene.add(phoneGroup);
 
     // Soft procedural environment for believable reflections on the metal bezel
@@ -132,7 +134,7 @@ export function HeroPhone3D() {
     // ---- Screen: looping SMS conversation showing the actual product flow ----
     const SCREEN_W = 420;
     const SCREEN_H = 900;
-    const LOOP_DURATION = 14; // seconds, full conversation cycle
+    const LOOP_DURATION = 13; // seconds, full conversation cycle
 
     const screenCanvas = document.createElement("canvas");
     screenCanvas.width = SCREEN_W;
@@ -173,106 +175,95 @@ export function HeroPhone3D() {
     function drawBubble(
       c: CanvasRenderingContext2D,
       text: string,
-      align: "left" | "right",
       bg: string,
       fg: string,
-      y: number,
-      maxBubbleWidth: number
+      maxBubbleWidth: number,
+      fontSize: number
     ) {
-      const padX = 18, padY = 12, lineHeight = 26, fontSize = 19;
-      c.font = `${fontSize}px -apple-system, Helvetica, Arial, sans-serif`;
+      const padX = 26, padY = 22, lineHeight = fontSize + 12;
+      c.font = `bold ${fontSize}px -apple-system, Helvetica, Arial, sans-serif`;
       const lines = wrapText(c, text, maxBubbleWidth - padX * 2);
       const textWidth = Math.max(...lines.map((l) => c.measureText(l).width));
       const bubbleWidth = Math.min(maxBubbleWidth, textWidth + padX * 2);
       const bubbleHeight = lines.length * lineHeight + padY * 2;
-      const x = align === "right" ? SCREEN_W - 24 - bubbleWidth : 24;
+      const x = (SCREEN_W - bubbleWidth) / 2;
+      const y = (SCREEN_H - bubbleHeight) / 2;
 
       c.fillStyle = bg;
-      roundRectPath(c, x, y, bubbleWidth, bubbleHeight, 16);
+      roundRectPath(c, x, y, bubbleWidth, bubbleHeight, 22);
       c.fill();
 
       c.fillStyle = fg;
       c.textAlign = "left";
       c.textBaseline = "top";
       lines.forEach((line, i) => {
-        c.fillText(line, x + padX, y + padY + i * lineHeight + 2);
+        const lineWidth = c.measureText(line).width;
+        c.fillText(line, x + (bubbleWidth - lineWidth) / 2, y + padY + i * lineHeight + 2);
       });
-
-      return y + bubbleHeight;
     }
 
-    function drawTyping(c: CanvasRenderingContext2D, y: number, phase: number) {
-      const w = 64, h = 38;
+    function drawTyping(c: CanvasRenderingContext2D, phase: number) {
+      const w = 110, h = 64;
+      const x = (SCREEN_W - w) / 2;
+      const y = (SCREEN_H - h) / 2;
       c.fillStyle = "#1f1f23";
-      roundRectPath(c, 24, y, w, h, 18);
+      roundRectPath(c, x, y, w, h, 28);
       c.fill();
       for (let i = 0; i < 3; i++) {
         c.beginPath();
-        const dotY = y + h / 2 + (i === phase ? -3 : 0);
-        c.arc(24 + 18 + i * 14, dotY, 3.5, 0, Math.PI * 2);
+        const dotY = y + h / 2 + (i === phase ? -5 : 0);
+        c.arc(x + 30 + i * 26, dotY, 6, 0, Math.PI * 2);
         c.fillStyle = i === phase ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)";
         c.fill();
       }
-      return y + h;
     }
 
+    function drawMissedCallCard(c: CanvasRenderingContext2D) {
+      const w = 300, h = 110;
+      const x = (SCREEN_W - w) / 2;
+      const y = (SCREEN_H - h) / 2;
+      c.fillStyle = "rgba(255,255,255,0.07)";
+      roundRectPath(c, x, y, w, h, 20);
+      c.fill();
+      c.textAlign = "center";
+      c.textBaseline = "top";
+      c.fillStyle = "rgba(255,255,255,0.5)";
+      c.font = "15px -apple-system, Helvetica, Arial, sans-serif";
+      c.fillText("MISSED CALL", SCREEN_W / 2, y + 26);
+      c.fillStyle = "#ffffff";
+      c.font = "bold 24px -apple-system, Helvetica, Arial, sans-serif";
+      c.fillText("(407) 555-0182", SCREEN_W / 2, y + 56);
+    }
+
+    // ---- One message at a time, large and centered — far more legible
+    // at small phone sizes than a stacked conversation thread ----
     function drawScreen(cycleT: number) {
       sctx.clearRect(0, 0, SCREEN_W, SCREEN_H);
       sctx.fillStyle = "#0d0a05";
       sctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
 
-      // Header
+      // Header (always visible)
       sctx.textAlign = "center";
       sctx.textBaseline = "top";
-      sctx.fillStyle = "rgba(212,175,55,0.9)";
+      sctx.fillStyle = "rgba(212,175,55,0.85)";
       sctx.font = "bold 22px -apple-system, Helvetica, Arial, sans-serif";
-      sctx.fillText("Tina · AI Assistant", SCREEN_W / 2, 68);
+      sctx.fillText("Tina · AI Assistant", SCREEN_W / 2, 56);
       sctx.fillStyle = "rgba(255,255,255,0.15)";
-      sctx.fillRect(40, 102, SCREEN_W - 80, 1.5);
-      sctx.textAlign = "left";
+      sctx.fillRect(40, 90, SCREEN_W - 80, 1.5);
 
-      const maxWidth = 320;
-      let y = 128;
+      const maxWidth = 340;
 
-      if (cycleT > 1.0) {
-        sctx.font = "15px -apple-system, Helvetica, Arial, sans-serif";
-        const label = "Missed Call · (407) 555-0182";
-        const w = sctx.measureText(label).width + 32;
-        const px = (SCREEN_W - w) / 2;
-        sctx.fillStyle = "rgba(255,255,255,0.08)";
-        roundRectPath(sctx, px, y, w, 30, 15);
-        sctx.fill();
-        sctx.fillStyle = "rgba(255,255,255,0.55)";
-        sctx.textAlign = "center";
-        sctx.fillText(label, SCREEN_W / 2, y + 8);
-        sctx.textAlign = "left";
-        y += 30 + 22;
-      }
-
-      if (cycleT > 2.8) {
-        y = drawBubble(
-          sctx,
-          "Hey! Sorry we missed your call \uD83D\uDC4B Want to grab a time?",
-          "right",
-          "#D4AF37",
-          "#1a1407",
-          y,
-          maxWidth
-        );
-        y += 18;
-      }
-
-      if (cycleT > 5.0 && cycleT <= 6.4) {
+      if (cycleT <= 1.8) {
+        drawMissedCallCard(sctx);
+      } else if (cycleT <= 4.4) {
+        drawBubble(sctx, "Sorry we missed your call! Want to grab a time?", "#D4AF37", "#1a1407", maxWidth, 22);
+      } else if (cycleT <= 5.8) {
         const phase = Math.floor((cycleT * 3) % 3);
-        y = drawTyping(sctx, y, phase);
-        y += 18;
-      } else if (cycleT > 6.4) {
-        y = drawBubble(sctx, "Yes! Tomorrow 2pm?", "left", "#1f1f23", "#f5f1e6", y, maxWidth);
-        y += 18;
-      }
-
-      if (cycleT > 8.2) {
-        drawBubble(sctx, "Perfect, you're booked \u2705", "right", "#D4AF37", "#1a1407", y, maxWidth);
+        drawTyping(sctx, phase);
+      } else if (cycleT <= 8.4) {
+        drawBubble(sctx, "Yes! Tomorrow 2pm?", "#1f1f23", "#f5f1e6", maxWidth, 24);
+      } else if (cycleT <= 12.0) {
+        drawBubble(sctx, "Booked for 2pm \u2705", "#D4AF37", "#1a1407", maxWidth, 26);
       }
     }
 
@@ -325,6 +316,12 @@ export function HeroPhone3D() {
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
+
+      // Re-check mobile breakpoint on resize/orientation change
+      const nowMobile = window.innerWidth < 768;
+      const newScale = nowMobile ? 0.46 : 0.68;
+      phoneGroup.scale.set(newScale, newScale, newScale);
+      baseY = nowMobile ? -1.5 : -1.9;
     }
     window.addEventListener("resize", resize);
     resize();
@@ -350,7 +347,7 @@ export function HeroPhone3D() {
       phoneGroup.rotation.y += (targetRotY - phoneGroup.rotation.y) * 0.06;
       phoneGroup.rotation.x += (-targetRotX - phoneGroup.rotation.x) * 0.06;
       phoneGroup.rotation.y += Math.sin(t * 0.4) * 0.0015;
-      phoneGroup.position.y = -2.2 + Math.sin(t * 0.6) * 0.12;
+      phoneGroup.position.y = baseY + Math.sin(t * 0.6) * 0.12;
 
       pulseRings.forEach((p) => {
         const local = ((t + p.delay) % 3.3) / 3.3;
