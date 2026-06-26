@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { HeroParticles } from "./hero-particles";
 
 const BOOKING_URL = "https://api.leadconnectorhq.com/widget/booking/2D03AJHPVtlSaiidxOrw";
 
@@ -17,6 +18,7 @@ export function CTA() {
       <div className="absolute inset-0">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#D4AF37]/20 rounded-full blur-[150px] animate-pulse-glow" />
       </div>
+      <HeroParticles />
       <div className="absolute inset-0 grid-pattern opacity-30" />
       
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
@@ -35,7 +37,8 @@ export function CTA() {
             Setup takes 48-72 hours. No contracts. No tech work on your end. We handle everything.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex flex-col sm:flex-row gap-4">
+            <div className="absolute -inset-x-12 -inset-y-8 bg-[#D4AF37]/15 rounded-full blur-[60px] pointer-events-none" />
             <Button 
               size="lg" 
               className="bg-[#D4AF37] text-[#09090b] hover:bg-[#D4AF37]/90 rounded-full px-8 py-6 text-base font-medium group"
