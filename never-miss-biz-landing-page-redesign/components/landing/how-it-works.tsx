@@ -68,7 +68,37 @@ export function HowItWorks() {
         </motion.p>
 
         {/* Steps */}
-        <div className="grid md:grid-cols-3 gap-px bg-border rounded-2xl overflow-hidden mb-20">
+        <div className="relative grid md:grid-cols-3 gap-px bg-border rounded-2xl overflow-hidden mb-20">
+          {/* Signal path connecting the 3 steps — draws itself on scroll */}
+          <svg
+            className="absolute left-0 right-0 top-12 w-full h-6 pointer-events-none hidden md:block z-10"
+            viewBox="0 0 100 10"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <motion.path
+              d="M 16.66 5 L 50 5 L 83.33 5"
+              stroke="#D4AF37"
+              strokeWidth="0.6"
+              fill="none"
+              vectorEffect="non-scaling-stroke"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={isInView ? { pathLength: 1, opacity: 0.6 } : {}}
+              transition={{ duration: 1.4, delay: 0.5, ease: "easeInOut" }}
+            />
+            {[16.66, 50, 83.33].map((cx, i) => (
+              <motion.circle
+                key={cx}
+                cx={cx}
+                cy={5}
+                r={1.4}
+                fill="#D4AF37"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.4, delay: 0.5 + i * 0.45 }}
+              />
+            ))}
+          </svg>
           {steps.map((step, index) => (
             <motion.div
               key={step.number}
