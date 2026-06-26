@@ -46,8 +46,8 @@ export function HeroPhone3D() {
     scene.add(rimLight);
 
     const phoneGroup = new THREE.Group();
-    phoneGroup.scale.set(0.62, 0.62, 0.62);
-    phoneGroup.position.set(0, -0.3, -1.4);
+    phoneGroup.scale.set(0.85, 0.85, 0.85);
+    phoneGroup.position.set(0, -2.2, -1.4);
     scene.add(phoneGroup);
 
     // Soft procedural environment for believable reflections on the metal bezel
@@ -179,7 +179,7 @@ export function HeroPhone3D() {
       y: number,
       maxBubbleWidth: number
     ) {
-      const padX = 16, padY = 10, lineHeight = 22, fontSize = 16;
+      const padX = 18, padY = 12, lineHeight = 26, fontSize = 19;
       c.font = `${fontSize}px -apple-system, Helvetica, Arial, sans-serif`;
       const lines = wrapText(c, text, maxBubbleWidth - padX * 2);
       const textWidth = Math.max(...lines.map((l) => c.measureText(l).width));
@@ -225,17 +225,17 @@ export function HeroPhone3D() {
       sctx.textAlign = "center";
       sctx.textBaseline = "top";
       sctx.fillStyle = "rgba(212,175,55,0.9)";
-      sctx.font = "bold 19px -apple-system, Helvetica, Arial, sans-serif";
+      sctx.font = "bold 22px -apple-system, Helvetica, Arial, sans-serif";
       sctx.fillText("Tina · AI Assistant", SCREEN_W / 2, 68);
       sctx.fillStyle = "rgba(255,255,255,0.15)";
       sctx.fillRect(40, 102, SCREEN_W - 80, 1.5);
       sctx.textAlign = "left";
 
-      const maxWidth = 300;
+      const maxWidth = 320;
       let y = 128;
 
       if (cycleT > 1.0) {
-        sctx.font = "13px -apple-system, Helvetica, Arial, sans-serif";
+        sctx.font = "15px -apple-system, Helvetica, Arial, sans-serif";
         const label = "Missed Call · (407) 555-0182";
         const w = sctx.measureText(label).width + 32;
         const px = (SCREEN_W - w) / 2;
@@ -350,7 +350,7 @@ export function HeroPhone3D() {
       phoneGroup.rotation.y += (targetRotY - phoneGroup.rotation.y) * 0.06;
       phoneGroup.rotation.x += (-targetRotX - phoneGroup.rotation.x) * 0.06;
       phoneGroup.rotation.y += Math.sin(t * 0.4) * 0.0015;
-      phoneGroup.position.y = Math.sin(t * 0.6) * 0.12;
+      phoneGroup.position.y = -2.2 + Math.sin(t * 0.6) * 0.12;
 
       pulseRings.forEach((p) => {
         const local = ((t + p.delay) % 3.3) / 3.3;
