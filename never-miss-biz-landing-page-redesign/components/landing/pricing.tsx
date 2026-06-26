@@ -3,68 +3,160 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import { HeroParticles } from "./hero-particles";
 
 const BOOKING_URL = "https://api.leadconnectorhq.com/widget/booking/2D03AJHPVtlSaiidxOrw";
 
-export function CTA() {
+const plans = [
+  {
+    name: "Starter",
+    tagline: "Your Defense",
+    description: "Never lose another lead",
+    features: [
+      "Instant lead response system",
+      "Intelligent SMS conversations",
+      "Automated appointment booking & no-show reduction",
+      "Monthly performance report",
+      "14-day free trial",
+    ],
+    cta: "Get Protected",
+    popular: false,
+    ctaStyle: "dark",
+  },
+  {
+    name: "Growth",
+    tagline: "Your Offense",
+    description: "For growing businesses ready to scale",
+    features: [
+      "Starter +",
+      "Reputation growth system",
+      "Rank higher on Google",
+      "Get found. Get called. Get hired.",
+      "Automated lead pursuit",
+    ],
+    cta: "Start My Offense",
+    popular: true,
+    ctaStyle: "gold",
+  },
+  {
+    name: "Full System",
+    tagline: "Your Complete Playbook",
+    description: "For businesses ready to dominate their market",
+    features: [
+      "Growth +",
+      "Voice AI — calls answered 24/7",
+      "Your website gets a smart upgrade — visitors can speak directly with your AI",
+      "Complete virtual front desk — answers calls, texts leads, books jobs, and builds your reputation. Automatically.",
+      "Local SEO optimization",
+    ],
+    cta: "Go All In",
+    popular: false,
+    ctaStyle: "dark",
+  },
+];
+
+export function Pricing() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="book-demo" ref={ref} className="relative py-32 overflow-hidden bg-[#09090b]">
-      {/* Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#D4AF37]/20 rounded-full blur-[150px] animate-pulse-glow" />
-      </div>
-      <HeroParticles />
+    <section id="pricing" ref={ref} className="relative py-32 overflow-hidden bg-[#09090b]">
       <div className="absolute inset-0 grid-pattern opacity-30" />
       
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+        {/* Section Label */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="max-w-3xl"
+          initial={{ opacity: 0, x: -20 }}
+          animate={isInView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="flex items-center gap-4 mb-8"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-            Ready to recover your first{" "}
-            <span className="text-[#D4AF37] text-glow">missed job?</span>
-          </h2>
-          
-          <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl">
-            Setup takes 48-72 hours. No contracts. No tech work on your end. We handle everything.
-          </p>
-          
-          <div className="relative flex flex-col sm:flex-row gap-4">
-            <div className="absolute -inset-x-12 -inset-y-8 bg-[#D4AF37]/15 rounded-full blur-[60px] pointer-events-none" />
-            <Button 
-              size="lg" 
-              className="bg-[#D4AF37] text-[#09090b] hover:bg-[#D4AF37]/90 rounded-full px-8 py-6 text-base font-medium group"
-              asChild
-            >
-              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
-                Get Protected
-                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="bg-[#171717] border-border text-foreground hover:bg-[#171717]/80 rounded-full px-8 py-6 text-base"
-              asChild
-            >
-              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
-                Schedule a Call
-              </a>
-            </Button>
-          </div>
-          
-          <p className="text-sm text-muted-foreground mt-8">
-            {"14-day free trial • No contracts • Cancel anytime"}
-          </p>
+          <div className="w-12 h-px bg-[#D4AF37]" />
+          <span className="text-sm text-muted-foreground uppercase tracking-wider">Plans</span>
         </motion.div>
+
+        {/* Main Headline */}
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-16 max-w-4xl"
+        >
+          Stop losing leads.{" "}
+          <span className="text-[#D4AF37]">Start winning jobs.</span>
+        </motion.h2>
+
+        {/* Pricing Grid */}
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl">
+          {plans.map((plan, index) => (
+            <motion.div
+              key={plan.name}
+              initial={{ opacity: 0, y: 40 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+              className="relative"
+            >
+              {plan.popular && (
+                <div className="absolute -top-3 left-6 z-20">
+                  <span className="bg-[#D4AF37] text-[#09090b] text-xs font-medium px-3 py-1 rounded-full">
+                    Most Popular
+                  </span>
+                </div>
+              )}
+
+              {plan.popular && (
+                <div className="pricing-glow-ring" aria-hidden="true" />
+              )}
+
+              <div className={`relative bg-[#09090b] border rounded-2xl p-8 h-full flex flex-col ${
+                plan.popular ? "border-[#D4AF37]" : "border-border"
+              }`}>
+                {/* Plan Header */}
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold text-foreground uppercase">{plan.name}</h3>
+                  <span className="text-xs text-[#D4AF37] uppercase tracking-[0.1em] font-medium">
+                    {plan.tagline}
+                  </span>
+                  <p className="text-sm text-muted-foreground mt-3">{plan.description}</p>
+                </div>
+                
+                
+                {/* Features - Plain text, no bullets */}
+                <div className="space-y-4 mb-8 flex-grow">
+                  {plan.features.map((feature) => (
+                    <p key={feature} className="text-sm text-foreground leading-relaxed">
+                      {feature}
+                    </p>
+                  ))}
+                </div>
+                
+                {/* CTA */}
+                <Button 
+                  className={`w-full rounded-full font-medium ${
+                    plan.ctaStyle === "gold"
+                      ? "bg-[#D4AF37] text-[#09090b] hover:bg-[#D4AF37]/90" 
+                      : "bg-[#171717] text-foreground hover:bg-[#171717]/80 border border-border"
+                  }`}
+                  size="lg"
+                  asChild
+                >
+                  <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
+                    {plan.cta}
+                  </a>
+                </Button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Bottom Note */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="text-muted-foreground mt-12"
+        >
+          No contracts. Cancel anytime.
+        </motion.p>
       </div>
     </section>
   );
