@@ -256,18 +256,18 @@ export function HeroPhone3D() {
       if (cycleT <= 1.8) {
         drawMissedCallCard(sctx);
       } else if (cycleT <= 4.4) {
-        drawBubble(sctx, "Missed your call, how can we help?", "#D4AF37", "#1a1407", maxWidth, 28);
+        drawBubble(sctx, "Sorry, we missed your call, how can we help?", "#D4AF37", "#1a1407", maxWidth, 32);
       } else if (cycleT <= 7.0) {
-        drawBubble(sctx, "I'd like to book an appointment", "#1f1f23", "#f5f1e6", maxWidth, 28);
+        drawBubble(sctx, "I'd like to book an appointment!", "#1f1f23", "#f5f1e6", maxWidth, 32);
       } else if (cycleT <= 9.6) {
-        drawBubble(sctx, "We have 2pm or 4pm available", "#D4AF37", "#1a1407", maxWidth, 28);
+        drawBubble(sctx, "We have 2pm or 4pm available, what work's best?", "#D4AF37", "#1a1407", maxWidth, 32);
       } else if (cycleT <= 11.0) {
         const phase = Math.floor((cycleT * 3) % 3);
         drawTyping(sctx, phase);
       } else if (cycleT <= 13.6) {
         drawBubble(sctx, "Yes, 2pm works!", "#1f1f23", "#f5f1e6", maxWidth, 34);
       } else if (cycleT <= 17.0) {
-        drawBubble(sctx, "Booked for 2pm \u2705", "#D4AF37", "#1a1407", maxWidth, 36);
+        drawBubble(sctx, "All set, booked for 2pm! \u2705", "#D4AF37", "#1a1407", maxWidth, 36);
       }
     }
 
