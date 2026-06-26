@@ -38,7 +38,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section ref={ref} className="relative overflow-hidden bg-[#09090b] pt-28 md:pt-36 pb-20">
+    <section ref={ref} className="relative overflow-hidden bg-[#09090b] pt-20 md:pt-32 pb-20">
       {/* Background Elements */}
       <div className="absolute inset-0 grid-pattern" />
 
@@ -138,7 +138,7 @@ export function Hero() {
         {/* Reserved space for the 3D phone showcase below — the phone itself
             renders via the full-bleed HeroPhone3D canvas, this just reserves
             the vertical room so it has its own clear zone, not overlapping text */}
-        <div className="h-[420px] md:h-[560px]" aria-hidden="true" />
+        <div className="h-[260px] md:h-[440px]" aria-hidden="true" />
 
       </div>
 
