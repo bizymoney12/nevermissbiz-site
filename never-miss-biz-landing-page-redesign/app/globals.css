@@ -220,3 +220,16 @@
   background: conic-gradient(from var(--border-angle), transparent 0%, #D4AF37 12%, transparent 30%);
   animation: rotate-border-angle 4s linear infinite;
 }
+
+/* Hero CTA — single button, pulsating glow border instead of two competing buttons */
+@keyframes cta-pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 18px 0 rgba(212, 175, 55, 0.35), inset 0 0 0 1.5px rgba(212, 175, 55, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 42px 6px rgba(212, 175, 55, 0.6), inset 0 0 0 1.5px rgba(212, 175, 55, 1);
+  }
+}
+.cta-glow-pulse {
+  animation: cta-pulse-glow 2.6s ease-in-out infinite;
+}
