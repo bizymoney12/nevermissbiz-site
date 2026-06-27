@@ -134,9 +134,11 @@ export function HeroPhone3D() {
     // ---- Screen: looping SMS conversation showing the actual product flow ----
     const SCREEN_W = 420;
     const SCREEN_H = 900;
-    const RES_SCALE = 2; // render at 2x and let the context scale handle it — keeps
-    // every existing pixel value below correct while doubling actual sharpness
-    const LOOP_DURATION = 15.5; // seconds, full conversation cycle
+    const RES_SCALE = 3; // bumped again for extra crispness margin
+    const RING_DURATION = 1.6;
+    const MISSED_CALL_DURATION = 1.8;
+    const PHASE_OFFSET = RING_DURATION + MISSED_CALL_DURATION;
+    const LOOP_DURATION = 16.5; // seconds, full conversation cycle
 
     const screenCanvas = document.createElement("canvas");
     screenCanvas.width = SCREEN_W * RES_SCALE;
@@ -175,6 +177,36 @@ export function HeroPhone3D() {
       return lines;
     }
 
+    function drawRingingScreen(c: CanvasRenderingContext2D, t: number) {
+      const cx = SCREEN_W / 2, cy = SCREEN_H / 2 - 40;
+      const pulse = 1 + Math.sin(t * 7) * 0.1;
+
+      // soft pulsing glow ring behind the icon
+      const glowR = 70 + Math.sin(t * 7) * 8;
+      const grad = c.createRadialGradient(cx, cy, 10, cx, cy, glowR);
+      grad.addColorStop(0, "rgba(212,175,55,0.35)");
+      grad.addColorStop(1, "rgba(212,175,55,0)");
+      c.fillStyle = grad;
+      c.beginPath();
+      c.arc(cx, cy, glowR, 0, Math.PI * 2);
+      c.fill();
+
+      c.save();
+      c.translate(cx, cy);
+      c.scale(pulse, pulse);
+      c.font = "60px -apple-system, Helvetica, Arial, sans-serif";
+      c.textAlign = "center";
+      c.textBaseline = "middle";
+      c.fillText("\uD83D\uDCDE", 0, 4);
+      c.restore();
+
+      c.textAlign = "center";
+      c.textBaseline = "top";
+      c.fillStyle = "rgba(255,255,255,0.6)";
+      c.font = "600 20px -apple-system, Helvetica, Arial, sans-serif";
+      c.fillText("Incoming Call...", SCREEN_W / 2, cy + 76);
+    }
+
     function drawMissedCallCard(c: CanvasRenderingContext2D) {
       const w = 340, h = 140;
       const x = (SCREEN_W - w) / 2;
@@ -195,7 +227,7 @@ export function HeroPhone3D() {
     // ---- Conversation thread setup — bubbles accumulate and the stack
     // scrolls upward as new ones arrive, same as a real phone, instead of
     // swapping one message at a time. ----
-    const BUBBLE_FONT = 20;
+    const BUBBLE_FONT = 23;
     const BUBBLE_LINE_H = BUBBLE_FONT + 10;
     const BUBBLE_PAD_X = 18;
     const BUBBLE_PAD_Y = 14;
@@ -258,16 +290,16 @@ export function HeroPhone3D() {
       | { t: number; type: "msg"; align: "left" | "right"; bg: string; fg: string; text: string };
 
     const events: ConvoEvent[] = [
-      { t: 2.0, type: "typing", align: "right" },
-      { t: 2.8, type: "msg", align: "right", bg: "#D4AF37", fg: "#1a1407", text: "Sorry, we missed your call, how can we help?" },
-      { t: 4.2, type: "typing", align: "left" },
-      { t: 5.0, type: "msg", align: "left", bg: "#1f1f23", fg: "#f5f1e6", text: "I'd like to book an appointment!" },
-      { t: 6.4, type: "typing", align: "right" },
-      { t: 7.2, type: "msg", align: "right", bg: "#D4AF37", fg: "#1a1407", text: "We have 2pm or 4pm available, what works best?" },
-      { t: 8.6, type: "typing", align: "left" },
-      { t: 9.4, type: "msg", align: "left", bg: "#1f1f23", fg: "#f5f1e6", text: "Yes, 2pm works!" },
-      { t: 10.8, type: "typing", align: "right" },
-      { t: 11.6, type: "msg", align: "right", bg: "#D4AF37", fg: "#1a1407", text: "All set, booked for 2pm! \u2705" },
+      { t: PHASE_OFFSET + 0.2, type: "typing", align: "right" },
+      { t: PHASE_OFFSET + 1.0, type: "msg", align: "right", bg: "#D4AF37", fg: "#1a1407", text: "Sorry, we missed your call, how can we help?" },
+      { t: PHASE_OFFSET + 2.4, type: "typing", align: "left" },
+      { t: PHASE_OFFSET + 3.2, type: "msg", align: "left", bg: "#1f1f23", fg: "#f5f1e6", text: "I'd like to book an appointment!" },
+      { t: PHASE_OFFSET + 4.6, type: "typing", align: "right" },
+      { t: PHASE_OFFSET + 5.4, type: "msg", align: "right", bg: "#D4AF37", fg: "#1a1407", text: "We have 2pm or 4pm available, what works best?" },
+      { t: PHASE_OFFSET + 6.8, type: "typing", align: "left" },
+      { t: PHASE_OFFSET + 7.6, type: "msg", align: "left", bg: "#1f1f23", fg: "#f5f1e6", text: "Yes, 2pm works!" },
+      { t: PHASE_OFFSET + 9.0, type: "typing", align: "right" },
+      { t: PHASE_OFFSET + 9.8, type: "msg", align: "right", bg: "#D4AF37", fg: "#1a1407", text: "All set, booked for 2pm! \u2705" },
     ];
 
     function drawScreen(cycleT: number) {
@@ -284,7 +316,11 @@ export function HeroPhone3D() {
       sctx.fillStyle = "rgba(255,255,255,0.15)";
       sctx.fillRect(40, 96, SCREEN_W - 80, 1.5);
 
-      if (cycleT <= 1.8) {
+      if (cycleT <= RING_DURATION) {
+        drawRingingScreen(sctx, cycleT);
+        return;
+      }
+      if (cycleT <= PHASE_OFFSET) {
         drawMissedCallCard(sctx);
         return;
       }
@@ -300,25 +336,52 @@ export function HeroPhone3D() {
       }
 
       const revealedMsgs = events.filter((e) => e.type === "msg" && e.t <= cycleT) as Extract<ConvoEvent, { type: "msg" }>[];
-
-      // Stack bottom-up: typing indicator (if active) sits at the very
-      // bottom, then revealed messages newest-first, scrolling older ones
-      // up and off the top — exactly like a real phone.
-      let y = MSG_AREA_BOTTOM;
       const typingPhase = Math.floor((cycleT * 3) % 3);
+      const areaHeight = MSG_AREA_BOTTOM - MSG_AREA_TOP;
 
+      // First pass (newest-to-oldest): figure out which items actually fit
+      // in the visible area, same logic regardless of which anchor we use.
+      type StackItem =
+        | { kind: "typing"; align: "left" | "right"; height: number }
+        | { kind: "msg"; msg: Extract<ConvoEvent, { type: "msg" }>; height: number };
+      const fitted: StackItem[] = [];
+      let usedHeight = 0;
       if (activeTyping) {
-        y -= drawTypingAt(sctx, activeTyping, y, typingPhase);
-        y -= BUBBLE_GAP;
+        fitted.push({ kind: "typing", align: activeTyping, height: 50 });
+        usedHeight += 50 + BUBBLE_GAP;
       }
-
       for (let i = revealedMsgs.length - 1; i >= 0; i--) {
-        if (y <= MSG_AREA_TOP) break;
         const msg = revealedMsgs[i];
         const { bubbleHeight } = measureBubble(sctx, msg.text);
-        if (y - bubbleHeight < MSG_AREA_TOP) break;
-        drawBubbleAt(sctx, msg.text, msg.align, msg.bg, msg.fg, y);
-        y -= bubbleHeight + BUBBLE_GAP;
+        if (usedHeight + bubbleHeight + BUBBLE_GAP > areaHeight) break;
+        fitted.push({ kind: "msg", msg, height: bubbleHeight });
+        usedHeight += bubbleHeight + BUBBLE_GAP;
+      }
+
+      const totalRevealed = revealedMsgs.length + (activeTyping ? 1 : 0);
+      const everythingFits = fitted.length === totalRevealed;
+
+      if (everythingFits) {
+        // Conversation hasn't filled the screen yet — start from the top,
+        // newest message lowest, growing downward (how a thread naturally
+        // begins) instead of being glued to the bottom with a big gap above.
+        let y = MSG_AREA_TOP;
+        for (let i = fitted.length - 1; i >= 0; i--) {
+          const item = fitted[i];
+          if (item.kind === "typing") drawTypingAt(sctx, item.align, y + item.height, typingPhase);
+          else drawBubbleAt(sctx, item.msg.text, item.msg.align, item.msg.bg, item.msg.fg, y + item.height);
+          y += item.height + BUBBLE_GAP;
+        }
+      } else {
+        // Thread has overflowed the visible area — anchor to the bottom so
+        // the newest message is always visible, older ones scroll up and
+        // off the top, same as a real phone.
+        let y = MSG_AREA_BOTTOM;
+        for (const item of fitted) {
+          if (item.kind === "typing") drawTypingAt(sctx, item.align, y, typingPhase);
+          else drawBubbleAt(sctx, item.msg.text, item.msg.align, item.msg.bg, item.msg.fg, y);
+          y -= item.height + BUBBLE_GAP;
+        }
       }
     }
 
