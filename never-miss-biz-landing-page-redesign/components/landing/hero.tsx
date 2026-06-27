@@ -135,7 +135,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center -mt-4 md:-mt-2"
+          className="text-center mt-10 md:mt-14"
         >
           <span className="text-lg md:text-xl font-semibold text-[#D4AF37] text-glow">
             Job Booked. Automatically.
