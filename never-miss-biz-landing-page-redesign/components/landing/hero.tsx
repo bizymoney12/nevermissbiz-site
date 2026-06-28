@@ -128,16 +128,16 @@ export function Hero() {
         {/* Reserved space for the 3D phone showcase below — the phone itself
             renders via the full-bleed HeroPhone3D canvas, this just reserves
             the vertical room so it has its own clear zone, not overlapping text */}
-        <div className="h-[230px] md:h-[440px]" aria-hidden="true" />
+        <div className="h-[260px] md:h-[480px]" aria-hidden="true" />
 
         {/* Caption below the phone */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-10 md:mt-14"
+          className="text-center mt-24 md:mt-32"
         >
-          <span className="text-lg md:text-xl font-semibold text-[#D4AF37] text-glow">
+          <span className="text-xl md:text-2xl font-semibold text-[#D4AF37] text-glow">
             Job Booked. Automatically.
           </span>
         </motion.div>
