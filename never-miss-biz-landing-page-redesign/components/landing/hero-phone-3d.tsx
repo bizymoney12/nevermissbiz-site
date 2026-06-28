@@ -221,7 +221,7 @@ export function HeroPhone3D() {
       c.fillText("MISSED CALL", SCREEN_W / 2, y + 30);
       c.fillStyle = "#ffffff";
       c.font = "bold 34px -apple-system, Helvetica, Arial, sans-serif";
-      c.fillText("(407) 555-0182", SCREEN_W / 2, y + 68);
+      c.fillText("(407) 555-5555", SCREEN_W / 2, y + 68);
     }
 
     // ---- Conversation thread setup — bubbles accumulate and the stack
