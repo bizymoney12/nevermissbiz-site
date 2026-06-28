@@ -138,6 +138,7 @@ export function Hero() {
           className="text-center mt-24 md:mt-32"
         >
           <span className="text-xl md:text-2xl font-semibold text-[#D4AF37] text-glow">
+            
             Job Booked. Automatically.
           </span>
         </motion.div>
