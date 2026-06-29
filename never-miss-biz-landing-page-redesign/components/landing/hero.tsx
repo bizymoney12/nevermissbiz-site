@@ -127,7 +127,7 @@ export function Hero() {
 
         {/* Reserved space for the 3D phone showcase below — the phone itself
             renders via the full-bleed HeroPhone3D canvas */}
-        <div className="h-[190px] md:h-[520px]" aria-hidden="true" />
+        <div className="h-[60px] md:h-[300px]" aria-hidden="true" />
 
         {/* Caption below the phone — generous clearance this round on purpose,
             after the 3D-rendered version had real positioning/clipping issues */}
@@ -135,7 +135,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-[380px] md:mt-[400px]"
+          className="text-center mt-[510px] md:mt-[620px]"
         >
           <span
             className="text-2xl md:text-3xl font-bold text-[#F4D976]"
