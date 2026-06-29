@@ -48,7 +48,7 @@ export function HeroPhone3D() {
     const isMobile = window.innerWidth < 768;
     const phoneGroup = new THREE.Group();
     phoneGroup.scale.set(isMobile ? 0.46 : 0.68, isMobile ? 0.46 : 0.68, isMobile ? 0.46 : 0.68);
-    let baseY = -0.55; // moved up substantially — HTML spacer/margin shuffling wasn't actually changing this
+    let baseY = -0.85; // pulled back from -0.55 (overshot, overlapped CTA) — smaller step this time
     phoneGroup.position.set(0, baseY, -1.4);
     scene.add(phoneGroup);
 
@@ -438,7 +438,7 @@ export function HeroPhone3D() {
       const nowMobile = window.innerWidth < 768;
       const newScale = nowMobile ? 0.46 : 0.68;
       phoneGroup.scale.set(newScale, newScale, newScale);
-      baseY = -0.55;
+      baseY = -0.85;
     }
     window.addEventListener("resize", resize);
     resize();
