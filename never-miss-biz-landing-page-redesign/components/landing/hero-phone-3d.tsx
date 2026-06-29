@@ -415,6 +415,33 @@ export function HeroPhone3D() {
     notch.position.set(0, 1.62, 0.28);
     phoneGroup.add(notch);
 
+    // Caption — rendered as part of the 3D scene and attached directly to
+    // the phone, so it always sits correctly relative to it regardless of
+    // page layout, mobile/desktop differences, or section height changes.
+    // (An HTML-positioned caption kept missing because its position depended
+    // on page layout while the phone's position depends on 3D camera math —
+    // two systems that don't talk to each other.)
+    const captionCanvas = document.createElement("canvas");
+    captionCanvas.width = 900;
+    captionCanvas.height = 150;
+    const capCtx = captionCanvas.getContext("2d")!;
+    capCtx.textAlign = "center";
+    capCtx.textBaseline = "middle";
+    capCtx.font = "bold 64px -apple-system, Helvetica, Arial, sans-serif";
+    capCtx.shadowColor = "rgba(212,175,55,0.6)";
+    capCtx.shadowBlur = 18;
+    capCtx.fillStyle = "#D4AF37";
+    capCtx.fillText("Job Booked. Automatically.", captionCanvas.width / 2, captionCanvas.height / 2);
+    const captionTexture = new THREE.CanvasTexture(captionCanvas);
+    const captionGeo = new THREE.PlaneGeometry(3.4, (3.4 * captionCanvas.height) / captionCanvas.width);
+    const captionMat = new THREE.MeshBasicMaterial({
+      map: captionTexture,
+      transparent: true,
+    });
+    const caption = new THREE.Mesh(captionGeo, captionMat);
+    caption.position.set(0, -2.05 - 0.55, 0.05);
+    phoneGroup.add(caption);
+
     // Pulsing signal rings emanating from the phone
     const pulseRings: { mesh: THREE.Mesh; delay: number }[] = [];
     for (let i = 0; i < 3; i++) {
@@ -502,6 +529,9 @@ export function HeroPhone3D() {
       screenMat.dispose();
       notchMat.dispose();
       screenTexture.dispose();
+      captionGeo.dispose();
+      captionMat.dispose();
+      captionTexture.dispose();
       envTexture.dispose();
       envRT.texture.dispose();
       pulseRings.forEach((p) => {
