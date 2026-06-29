@@ -6,7 +6,7 @@ import { Phone, Mail, MapPin } from "lucide-react";
 const footerLinks = {
   product: [
     { label: "How It Works", href: "#how-it-works" },
-    { label: "Pricing", href: "#pricing" },
+    { label: "Plans", href: "#pricing" },
     { label: "FAQ", href: "#faq" },
   ],
   legal: [
