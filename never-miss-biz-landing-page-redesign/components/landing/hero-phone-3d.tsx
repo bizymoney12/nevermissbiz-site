@@ -48,7 +48,7 @@ export function HeroPhone3D() {
     const isMobile = window.innerWidth < 768;
     const phoneGroup = new THREE.Group();
     phoneGroup.scale.set(isMobile ? 0.46 : 0.68, isMobile ? 0.46 : 0.68, isMobile ? 0.46 : 0.68);
-    let baseY = isMobile ? -1.5 : -1.9;
+    let baseY = -1.5; // same base position for both — only scale differs between mobile/desktop now
     phoneGroup.position.set(0, baseY, -1.4);
     scene.add(phoneGroup);
 
@@ -415,32 +415,38 @@ export function HeroPhone3D() {
     notch.position.set(0, 1.62, 0.28);
     phoneGroup.add(notch);
 
-    // Caption — rendered as part of the 3D scene and attached directly to
-    // the phone, so it always sits correctly relative to it regardless of
-    // page layout, mobile/desktop differences, or section height changes.
-    // (An HTML-positioned caption kept missing because its position depended
-    // on page layout while the phone's position depends on 3D camera math —
-    // two systems that don't talk to each other.)
+    // Caption — rendered as part of the 3D scene, but as an independent
+    // scene object (not nested inside phoneGroup). Nesting it caused its
+    // effective position to be multiplied by phoneGroup's scale, which on
+    // desktop (bigger scale + more negative base position) pushed it past
+    // the camera's visible range entirely — not dim, literally off-screen.
+    // Positioning it additively here keeps it predictable on both sizes.
     const captionCanvas = document.createElement("canvas");
     captionCanvas.width = 900;
     captionCanvas.height = 150;
     const capCtx = captionCanvas.getContext("2d")!;
     capCtx.textAlign = "center";
     capCtx.textBaseline = "middle";
-    capCtx.font = "bold 64px -apple-system, Helvetica, Arial, sans-serif";
-    capCtx.shadowColor = "rgba(212,175,55,0.6)";
-    capCtx.shadowBlur = 18;
-    capCtx.fillStyle = "#D4AF37";
+    capCtx.font = "bold 78px -apple-system, Helvetica, Arial, sans-serif";
+    capCtx.shadowColor = "rgba(212,175,55,0.85)";
+    capCtx.shadowBlur = 30;
+    capCtx.fillStyle = "#F4D976";
+    capCtx.fillText("Job Booked. Automatically.", captionCanvas.width / 2, captionCanvas.height / 2);
+    // second pass, tighter glow, for a brighter hotter-looking core
+    capCtx.shadowBlur = 10;
     capCtx.fillText("Job Booked. Automatically.", captionCanvas.width / 2, captionCanvas.height / 2);
     const captionTexture = new THREE.CanvasTexture(captionCanvas);
-    const captionGeo = new THREE.PlaneGeometry(3.4, (3.4 * captionCanvas.height) / captionCanvas.width);
+    const captionScale = isMobile ? 0.46 : 0.62;
+    const captionGeo = new THREE.PlaneGeometry(3.4 * captionScale, (3.4 * captionScale * captionCanvas.height) / captionCanvas.width);
     const captionMat = new THREE.MeshBasicMaterial({
       map: captionTexture,
       transparent: true,
     });
     const caption = new THREE.Mesh(captionGeo, captionMat);
-    caption.position.set(0, -2.05 - 0.55, 0.05);
-    phoneGroup.add(caption);
+    const phoneScaleNow = isMobile ? 0.46 : 0.68;
+    const bezelBottom = baseY - 2.05 * phoneScaleNow;
+    caption.position.set(0, bezelBottom - 0.25, -1.4);
+    scene.add(caption);
 
     // Pulsing signal rings emanating from the phone
     const pulseRings: { mesh: THREE.Mesh; delay: number }[] = [];
@@ -465,7 +471,12 @@ export function HeroPhone3D() {
       const nowMobile = window.innerWidth < 768;
       const newScale = nowMobile ? 0.46 : 0.68;
       phoneGroup.scale.set(newScale, newScale, newScale);
-      baseY = nowMobile ? -1.5 : -1.9;
+      baseY = -1.5;
+
+      const newCaptionScale = nowMobile ? 0.46 : 0.62;
+      caption.scale.set(newCaptionScale / captionScale, newCaptionScale / captionScale, 1);
+      const newBezelBottom = baseY - 2.05 * newScale;
+      caption.position.y = newBezelBottom - 0.25;
     }
     window.addEventListener("resize", resize);
     resize();
