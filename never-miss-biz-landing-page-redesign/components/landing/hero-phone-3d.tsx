@@ -415,39 +415,6 @@ export function HeroPhone3D() {
     notch.position.set(0, 1.62, 0.28);
     phoneGroup.add(notch);
 
-    // Caption — rendered as part of the 3D scene, but as an independent
-    // scene object (not nested inside phoneGroup). Nesting it caused its
-    // effective position to be multiplied by phoneGroup's scale, which on
-    // desktop (bigger scale + more negative base position) pushed it past
-    // the camera's visible range entirely — not dim, literally off-screen.
-    // Positioning it additively here keeps it predictable on both sizes.
-    const captionCanvas = document.createElement("canvas");
-    captionCanvas.width = 900;
-    captionCanvas.height = 150;
-    const capCtx = captionCanvas.getContext("2d")!;
-    capCtx.textAlign = "center";
-    capCtx.textBaseline = "middle";
-    capCtx.font = "bold 78px -apple-system, Helvetica, Arial, sans-serif";
-    capCtx.shadowColor = "rgba(212,175,55,0.85)";
-    capCtx.shadowBlur = 30;
-    capCtx.fillStyle = "#F4D976";
-    capCtx.fillText("Job Booked. Automatically.", captionCanvas.width / 2, captionCanvas.height / 2);
-    // second pass, tighter glow, for a brighter hotter-looking core
-    capCtx.shadowBlur = 10;
-    capCtx.fillText("Job Booked. Automatically.", captionCanvas.width / 2, captionCanvas.height / 2);
-    const captionTexture = new THREE.CanvasTexture(captionCanvas);
-    const captionScale = isMobile ? 0.46 : 0.62;
-    const captionGeo = new THREE.PlaneGeometry(3.4 * captionScale, (3.4 * captionScale * captionCanvas.height) / captionCanvas.width);
-    const captionMat = new THREE.MeshBasicMaterial({
-      map: captionTexture,
-      transparent: true,
-    });
-    const caption = new THREE.Mesh(captionGeo, captionMat);
-    const phoneScaleNow = isMobile ? 0.46 : 0.68;
-    const bezelBottom = baseY - 2.05 * phoneScaleNow;
-    caption.position.set(0, bezelBottom - 0.25, -1.4);
-    scene.add(caption);
-
     // Pulsing signal rings emanating from the phone
     const pulseRings: { mesh: THREE.Mesh; delay: number }[] = [];
     for (let i = 0; i < 3; i++) {
@@ -472,11 +439,6 @@ export function HeroPhone3D() {
       const newScale = nowMobile ? 0.46 : 0.68;
       phoneGroup.scale.set(newScale, newScale, newScale);
       baseY = -1.5;
-
-      const newCaptionScale = nowMobile ? 0.46 : 0.62;
-      caption.scale.set(newCaptionScale / captionScale, newCaptionScale / captionScale, 1);
-      const newBezelBottom = baseY - 2.05 * newScale;
-      caption.position.y = newBezelBottom - 0.25;
     }
     window.addEventListener("resize", resize);
     resize();
@@ -540,9 +502,6 @@ export function HeroPhone3D() {
       screenMat.dispose();
       notchMat.dispose();
       screenTexture.dispose();
-      captionGeo.dispose();
-      captionMat.dispose();
-      captionTexture.dispose();
       envTexture.dispose();
       envRT.texture.dispose();
       pulseRings.forEach((p) => {
