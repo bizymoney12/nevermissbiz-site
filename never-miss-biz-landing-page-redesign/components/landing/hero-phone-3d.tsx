@@ -48,7 +48,7 @@ export function HeroPhone3D() {
     const isMobile = window.innerWidth < 768;
     const phoneGroup = new THREE.Group();
     phoneGroup.scale.set(isMobile ? 0.46 : 0.68, isMobile ? 0.46 : 0.68, isMobile ? 0.46 : 0.68);
-    let baseY = -1.5; // same base position for both — only scale differs between mobile/desktop now
+    let baseY = -0.55; // moved up substantially — HTML spacer/margin shuffling wasn't actually changing this
     phoneGroup.position.set(0, baseY, -1.4);
     scene.add(phoneGroup);
 
@@ -438,7 +438,7 @@ export function HeroPhone3D() {
       const nowMobile = window.innerWidth < 768;
       const newScale = nowMobile ? 0.46 : 0.68;
       phoneGroup.scale.set(newScale, newScale, newScale);
-      baseY = -1.5;
+      baseY = -0.55;
     }
     window.addEventListener("resize", resize);
     resize();
