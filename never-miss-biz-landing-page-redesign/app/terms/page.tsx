@@ -93,7 +93,7 @@ export default function TermsPage() {
               <div className="text-muted-foreground space-y-1">
                 <p>NeverMissBiz</p>
                 <p>Kissimmee, FL</p>
-                <p>(310) 654-1061</p>
+                <p>(407) 289-1406p>
                 <a 
                   href="mailto:mike@nevermissbiz.com" 
                   className="text-[#D4AF37] hover:underline"
