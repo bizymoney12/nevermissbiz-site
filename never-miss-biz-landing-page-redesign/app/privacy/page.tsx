@@ -16,11 +16,11 @@ export default function PrivacyPage() {
       <main className="min-h-screen bg-[#09090b] pt-24">
         {/* Grid pattern background */}
         <div className="fixed inset-0 grid-pattern opacity-20 pointer-events-none" />
-        
+
         <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-8 py-20">
           {/* Back link */}
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-12"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -86,9 +86,9 @@ export default function PrivacyPage() {
               <div className="text-muted-foreground space-y-1">
                 <p>NeverMissBiz</p>
                 <p>Kissimmee, FL</p>
-                <p>(407) 289-1406p>
-                <a 
-                  href="mailto:mike@nevermissbiz.com" 
+                <p>(407) 289-1406</p>
+                <a
+                  href="mailto:mike@nevermissbiz.com"
                   className="text-[#D4AF37] hover:underline"
                 >
                   mike@nevermissbiz.com
