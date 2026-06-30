@@ -135,7 +135,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-[400px] md:mt-[480px]"
+          className="text-center mt-[400px] md:mt-[540px]"
         >
           <span
             className="text-2xl md:text-3xl font-bold text-[#F4D976]"
